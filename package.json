@@ -9,9 +9,11 @@
   "scripts": {
     "bump_path": "npm version patch -m \"upgrade to %s\"",
     "bump_minor": "npm version minor -m \"upgrade to %s\"",
-    "release":"git push && release-to-github-with-changelog --remote",
+    "release": "git push && release-to-github-with-changelog --remote",
     "test": "mocha --recursive --timeout 999999 test/mocha",
-    "doc": "jsdoc -c jsdoc.json -d docs"
+    "doc": "jsdoc -c jsdoc.json -d docs",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -41,12 +43,14 @@
   },
   "homepage": "https://github.com/e174596549/queue-schedule#readme",
   "dependencies": {
-    "kafka-node": "^3.0.1"
+    "kafka-node": "^3.0.1",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
     "async": "^2.5.0",
     "chai": "^4.1.1",
     "mocha": "^3.5.0",
     "node-slogger": "^0.5.1"
-  }
+  },
+  "snyk": true
 }
