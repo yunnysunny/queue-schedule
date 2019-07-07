@@ -27,7 +27,7 @@ for topic in "${topics[@]}"
 do
   echo "Making topic $topic"
   config_str=""
-  if [ $topic eq "topic.5" ] then
+  if [ $topic eq "topic.5" ]; then
     config_str="--config max.message.bytes=10485760"
   fi
   until docker-compose exec kafka \
