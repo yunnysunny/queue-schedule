@@ -44,7 +44,7 @@
   "homepage": "https://github.com/e174596549/queue-schedule#readme",
   "dependencies": {
     "kafka-node": "^3.0.1",
-    "snyk": "^1.189.0"
+    "snyk": "^1.192.3"
   },
   "devDependencies": {
     "async": "^2.5.0",
