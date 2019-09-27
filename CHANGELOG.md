@@ -1,3 +1,7 @@
+# v1.1.1
+## Improvement
+1. Bump `kafka-node` to 4.1.3.
+
 # v1.1.0
 ## Add
 1. Add the object of `globalEvent` to emit the events of client's and producer's status.
@@ -20,7 +24,7 @@
 
 # v0.6.0
 ## Add
-1. Bump the package `node-kafka` to 3.0.1.
+1. Bump the package `kafka-node` to 3.0.1.
 
 # v0.5.3
 ## Fix
