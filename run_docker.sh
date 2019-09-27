@@ -31,7 +31,7 @@ do
     config_str="--config max.message.bytes=10485760"
   fi
   until docker-compose exec kafka \
-    kafka-topics --create --topic $topic --partitions 1 --replication-factor 1 --if-not-exists --zookeeper zookeeper:2181 $config_str
+    kafka-topics --create --topic $topic --partitions 1  --if-not-exists --zookeeper zookeeper:2181 $config_str
   do
     topic_result="$?"
     if [ "$topic_result" == "1" ]; then
