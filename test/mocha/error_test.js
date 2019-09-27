@@ -37,9 +37,10 @@ describe('error test#',function() {
         const HOST_NOT_EXIST = 'HOST_NOT_EXIST';
         var hasDone = false;
         globalEvent.on(globalEvent.EVENT_CLIENT_CLOSE,function(kafkaHost) {
-            expect(kafkaHost).to.be.equal(HOST_NOT_EXIST);
-            if (!hasDone) {done();} 
-            hasDone = true;
+            if (kafkaHost === HOST_NOT_EXIST) {
+                if (!hasDone) {done();} 
+                hasDone = true;
+            }
         });
         new KafkaProducer({
             name : SCHEDULE_NAME1,
