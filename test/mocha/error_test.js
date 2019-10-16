@@ -33,7 +33,7 @@ describe('error test#',function() {
         });
         
     });
-    it.skip('should emitt close when broker not exist',function(done) {
+    it('should emitt close when broker not exist',function(done) {
         const HOST_NOT_EXIST = 'localhost:9093';
         var hasDone = false;
         globalEvent.on(globalEvent.EVENT_CLIENT_CLOSE,function(kafkaHost) {
