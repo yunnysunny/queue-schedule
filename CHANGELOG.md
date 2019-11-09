@@ -1,4 +1,4 @@
-# v2.0.0-beta
+# v2.0.0
 ## Improvement
 1. Bump `kafka-node` to 5.0.0.
 
