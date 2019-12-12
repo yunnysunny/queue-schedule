@@ -1,6 +1,6 @@
 {
   "name": "queue-schedule",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Queue producer and consumer tools, with kafka support.",
   "main": "index.js",
   "engines": {
@@ -49,8 +49,9 @@
     "async": "^2.5.0",
     "chai": "^4.1.1",
     "mocha": "^3.5.0",
-    "snyk": "^1.192.3",
-    "node-slogger": "^0.5.1"
+    "node-rdkafka": "^v2.7.4",
+    "node-slogger": "^0.5.1",
+    "snyk": "^1.192.3"
   },
   "snyk": true
 }

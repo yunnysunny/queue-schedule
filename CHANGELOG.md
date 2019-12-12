@@ -1,3 +1,7 @@
+# v2.1.0
+## Add
+1. Add the choice of the driver of `node-librakafka` to produce and consume message, see `RdKafkaProducer` and `RdKafkaConsumer`.
+
 # v2.0.0
 ## Improvement
 1. Bump `kafka-node` to 5.0.0.
