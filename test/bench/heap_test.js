@@ -3,7 +3,7 @@
 const slogger = require('node-slogger').init({flashInterval:500});
 const {KafkaProducer,} = require('../../index');
 // const ZK_HOST = process.env.ZOOKEEPER_PEERS;
-const KAFKA_HOST = process.env.KAFKA_PEERS;
+const {shClient} = require('../mocha/config');
 const SCHEDULE_NAME1 = 'scheduleBench';
 const TOPIC_NAME1 = 'topic.5';
 const DELAY_INTERVAL = 1000;
@@ -13,14 +13,13 @@ const MAX_COUNT_SEND = 10;
 const begin = new Date().getTime();
 // const len = 10000;
 
-const data = {"content":"对于经常出差的人们来说，提着个笨重的行李箱、还要拿出笔记本找个舒适的姿势工作，绝不是一件轻松的事情。不过一款名为 Smartoo 的小玩意，或许能够给你带来意外的惊喜。1507884372122","avatar_url":"http://ss.bdimg.com/static/superman/img/logo/logo_white_fe6da1ec.png","created_at":1507884371865};
+const data = {'content':'对于经常出差的人们来说，提着个笨重的行李箱、还要拿出笔记本找个舒适的姿势工作，绝不是一件轻松的事情。不过一款名为 Smartoo 的小玩意，或许能够给你带来意外的惊喜。1507884372122','avatar_url':'http://ss.bdimg.com/static/superman/img/logo/logo_white_fe6da1ec.png','created_at':1507884371865};
 
 const kafkaProducer = new KafkaProducer({
     name : SCHEDULE_NAME1,
     topic: TOPIC_NAME1,
     delayInterval:DELAY_INTERVAL,
-    kafkaHost:KAFKA_HOST,
-    // zookeeperHost:ZK_HOST
+    client: shClient,
 });
 const NAMES = [SCHEDULE_NAME1];const name = NAMES[0];
 // for(let name of NAMES) {
