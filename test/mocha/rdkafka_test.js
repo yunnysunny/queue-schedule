@@ -7,30 +7,32 @@ const KAFKA_HOST = process.env.KAFKA_PEERS;
 const rand = 55;
 const FIST_DATA = {a:rand,b:2};
 const SCHEDULE_NAME1 = 'schedule1';
-const TOPIC_NAME1 = 'topic.rdkafka';
+const TOPIC_NAME1 = 'topic.rdkafka.' + Math.random();
 //queue.buffering.max.ms 0.5
 //queue.buffering.max.messages	100000
+
+const producerRd = new Kafka.HighLevelProducer({
+    'metadata.broker.list': KAFKA_HOST,
+    'linger.ms':0.1,
+    'queue.buffering.max.ms': 500,
+    'queue.buffering.max.messages':1000,
+    // debug: 'all'
+});
+producerRd.on('event.error',function(err) {
+    slogger.error('producer error');
+});
+producerRd.on('event.log',function(log) {
+    slogger.debug('producer log',log);
+});
+const producer = new RdKafkaProducer({
+    name : SCHEDULE_NAME1,
+    topic: TOPIC_NAME1,
+    producer:producerRd,
+    delayInterval: 500
+});
 describe('test-rdkafka# ', function() {
     it('create a producer',function(done) {
-        const producerRd = new Kafka.HighLevelProducer({
-            'metadata.broker.list': KAFKA_HOST,
-            'linger.ms':0.1,
-            'queue.buffering.max.ms': 500,
-            'queue.buffering.max.messages':1000,
-            // debug: 'all'
-        });
-        producerRd.on('event.error',function(err) {
-            slogger.error('producer error');
-        });
-        producerRd.on('event.log',function(log) {
-            slogger.debug('producer log',log);
-        });
-        const producer = new RdKafkaProducer({
-            name : SCHEDULE_NAME1,
-            topic: TOPIC_NAME1,
-            producer:producerRd,
-            delayInterval: 500
-        });
+        
         producer.addData(FIST_DATA, {},function(err) {
             if (err) {
                 slogger.error('write to queue error',err);
@@ -48,7 +50,7 @@ describe('test-rdkafka# ', function() {
             'socket.keepalive.enable': true,
             'socket.nagle.disable': true,
             'enable.auto.commit': true,
-            'fetch.wait.max.ms': 5,
+            'fetch.wait.max.ms': 50,
             'fetch.error.backoff.ms': 5,
             'queued.max.messages.kbytes': 1024 * 10,
             debug:'all'
@@ -89,9 +91,9 @@ describe('test-rdkafka# ', function() {
             done(err);
         }).on(RdKafkaConsumer.EVENT_CLIENT_READY,function() {
             slogger.trace('the consumer client is ready');
-            
+            producer.addData(FIST_DATA);
         }).on(RdKafkaConsumer.EVENT_LOG,function(log) {
-            slogger.trace(JSON.stringify(log));
+            // slogger.trace(JSON.stringify(log));
         });
     });
 

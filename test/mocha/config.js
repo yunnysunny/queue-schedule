@@ -9,9 +9,10 @@ exports.producerPromise = new Promise(function(resolve,reject) {
     });
 
     producerCreater.on('error',function(err) {
+        console.error(err);
         reject(err);
     });
-});
+}).catch(function() {});
 // before(function() {
 //     console.log('add event log');
 //     globalEvent.on(globalEvent.EVENT_CLIENT_READY,function(kafkaHost) {
