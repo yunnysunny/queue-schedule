@@ -91,7 +91,7 @@ describe('test-rdkafka# ', function() {
             slogger.trace('the consumer client is ready');
             
         }).on(RdKafkaConsumer.EVENT_LOG,function(log) {
-            // slogger.trace(JSON.stringify(log));
+            slogger.trace(JSON.stringify(log));
         });
     });
 
