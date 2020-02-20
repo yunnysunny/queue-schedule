@@ -1,6 +1,34 @@
-const EventEmitter = require('events');
-// const kafka = require('kafka-node');
-const {getProducer} = require('./producer_pool');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: SHKafkaProducer.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: SHKafkaProducer.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const EventEmitter = require('events');
+// const {HighLevelProducer} = require('kafka-node');
+// const {getProducer} = require('./producer_pool');
 /**
  * @function PrepareMiddleware
  * 
@@ -17,7 +45,6 @@ const {getProducer} = require('./producer_pool');
  /**
   * @typedef {Object} ProducerOption
   * 
-  * @class KafkaProducer
   * @param {String} name The name of current instance.
   * @param {String=} kafkaHost The host of the broker of kafka, when both of `zookeeperHost` and `kafkaHost` passed, the `kafkaHost` has higher priority.
   * @param {String=} topic The topic where you save data in it.
@@ -27,36 +54,38 @@ const {getProducer} = require('./producer_pool');
 
 /**
  * The class of the producer of Kafka
- * @class KafkaProducer
+ * @class SHKafkaProducer
  * @extends {EventEmitter}
  */
-class KafkaProducer extends EventEmitter {
+class SHKafkaProducer extends EventEmitter {
     /**
-     * Creates an instance of KafkaProducer.
+     * Creates an instance of SHKafkaProducer.
      * 
      * @param {ProducerOption} option
-     * @memberof KafkaProducer
+     * @memberof SHKafkaProducer
      */
     constructor({
         name,
         topic,
-        kafkaHost,
+        producerPromise,
         delayInterval,
         prepareMiddleware
     }) {
         super();
         this.name = name;
         this.producer = null;
-        this._clientPromise = null;
+        
         this._clientOk = false;
-        if (!kafkaHost) {
-            throw new Error('You must giva a  kafkaHost.');
+        if (!producerPromise) {
+            throw new Error('You must give a  producer promise.');
         }
+        this._producerPromise = producerPromise;
         this.topic = topic;
         if (!this.topic) {
             throw new Error('You must give the topic paramemter.');
         }
-        this._createProducer(kafkaHost);
+        this._waitProducerReady();
+        this.producer = producerPromise;
 
         this.delayInterval = delayInterval;
         this._delayData = {};
@@ -83,40 +112,23 @@ class KafkaProducer extends EventEmitter {
      * @private
      * @param {String} zookeeperHost 
      * 
-     * @memberof KafkaProducer
+     * @memberof SHKafkaProducer
      */
 
-    _createProducer(kafkaHost) {
+    _waitProducerReady() {
         // const client = new kafka.KafkaClient({kafkaHost: kafkaHost});
         const _this = this;
-
-        _this._clientPromise = new Promise(function(resolve,reject) {
-
-            const producerCreater = getProducer(kafkaHost);
-            if (producerCreater.producer) {
-                _this.producer = producerCreater.producer;
-                _this._clientOk = true;
-                resolve();
-                return;
-            }
-            producerCreater.initPromise.then(function() {
-                _this.producer = producerCreater.producer;
-                _this._clientOk = true;
-                resolve();
-            }).catch(function(err) {
-                _this._clientOk = false;
-                reject(err);
-            });
-            
-        }).catch(function() {
-            
+        this._producerPromise.then(function(producer) {
+            _this.producer = producer;
+            _this._clientOk = true;
         });
+
     }
 
     /**
      * @private
      * 
-     * @memberof KafkaProducer
+     * @memberof SHKafkaProducer
      */
     _doSendDataTimer() {
         const _this = this;
@@ -130,7 +142,7 @@ class KafkaProducer extends EventEmitter {
             if (arrayLen === 0) {
                 return _this._doSendDataTimer();
             }
-            for (var i=0;i<arrayLen;i++) {
+            for (var i=0;i&lt;arrayLen;i++) {
                 const topicSuffix = keys[i];
                 const topicData = _delayData[topicSuffix];
                 const dataArray = topicData.splice(0);
@@ -138,10 +150,10 @@ class KafkaProducer extends EventEmitter {
                     _this.producer.send(
                         _this._createSendData(dataArray,{topicSuffix}),function(err) {
                             if (err) {
-                                _this.emit(KafkaProducer.EVENT_SEND_ERROR,err,dataArray);
+                                _this.emit(SHKafkaProducer.EVENT_SEND_ERROR,err,dataArray);
                             }
                             _this.emit(
-                                KafkaProducer.EVENT_DELAY_MESSAGE_SEND_FINISHED,
+                                SHKafkaProducer.EVENT_DELAY_MESSAGE_SEND_FINISHED,
                                 err,dataArray.length
                             );
                         }
@@ -160,7 +172,7 @@ class KafkaProducer extends EventEmitter {
      * @param {Object} taskData 
      * @param {SendOption} options
      * @returns Array[{{topic:String,messages:Array}}]
-     * @memberof KafkaProducer
+     * @memberof SHKafkaProducer
      */
     _createSendData(taskData, options) {
         const suffix = options.topicSuffix || '';
@@ -180,7 +192,7 @@ class KafkaProducer extends EventEmitter {
      * @param {Object} taskData 
      * @param {SendOption} options
      * @param {Function} callback 
-     * @memberof KafkaProducer
+     * @memberof SHKafkaProducer
      */
     _sendAtOnce(taskData,options,callback) {
         const _this = this;
@@ -189,7 +201,7 @@ class KafkaProducer extends EventEmitter {
             function(err,data) {
                 callback(err,data);
                 if (err) {
-                    _this.emit(KafkaProducer.EVENT_SEND_ERROR,err,taskData);
+                    _this.emit(SHKafkaProducer.EVENT_SEND_ERROR,err,taskData);
                 }
             }
         );
@@ -202,10 +214,10 @@ class KafkaProducer extends EventEmitter {
      * @param {SendOption} options
      * @param {Function=} [callback=function(err) {}] 
      * @returns {Boolean} Whether the taskData is valid.
-     * @memberof KafkaProducer
+     * @memberof SHKafkaProducer
      */
     addData(taskData, options = { topicSuffix : '' }, callback = function() {}) {
-        if (this._prepareMiddleware && this._prepareMiddleware(taskData) === false) {
+        if (this._prepareMiddleware &amp;&amp; this._prepareMiddleware(taskData) === false) {
             return false;
         }
         const topicSuffix = options.topicSuffix || '';
@@ -220,8 +232,10 @@ class KafkaProducer extends EventEmitter {
             this._sendAtOnce(taskData,options,callback);
         } else {
             const _this = this;
-            this._clientPromise.then(function() {
-                _this._sendAtOnce(taskData,options,callback)
+            this._producerPromise.then(function() {
+                setImmediate(function doNextLoop() {
+                    _this._sendAtOnce(taskData,options,callback);
+                });
             }).catch(function(err) {
                 callback(err);
             });
@@ -248,7 +262,7 @@ class KafkaProducer extends EventEmitter {
 /**
  * The event to notify that a batch of messages have been sent finished.
  */
-KafkaProducer.EVENT_DELAY_MESSAGE_SEND_FINISHED = 'eventDelayMessageSendFinished';
+SHKafkaProducer.EVENT_DELAY_MESSAGE_SEND_FINISHED = 'eventDelayMessageSendFinished';
 /**
  * The event to notify that the producer is ready.
  */
@@ -261,6 +275,29 @@ KafkaProducer.EVENT_DELAY_MESSAGE_SEND_FINISHED = 'eventDelayMessageSendFinished
 /**
  * The event emitted when an error occurs after sending data to kafka.
  */
-KafkaProducer.EVENT_SEND_ERROR = 'eventSendError';
+SHKafkaProducer.EVENT_SEND_ERROR = 'eventSendError';
 
-module.exports = KafkaProducer;
+module.exports = SHKafkaProducer;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="RdKafkaConsumer.html">RdKafkaConsumer</a></li><li><a href="RdKafkaConsumer.RdKafkaConsumer.html">RdKafkaConsumer</a></li><li><a href="RdKafkaProducer.html">RdKafkaProducer</a></li><li><a href="RdKafkaProducer.RdKafkaProducer.html">RdKafkaProducer</a></li><li><a href="SHKafkaProducer.html">SHKafkaProducer</a></li><li><a href="SHKafkaProducer.SHKafkaConsumer.html">SHKafkaConsumer</a></li><li><a href="SHKafkaProducer.SHKafkaProducer.html">SHKafkaProducer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#PrepareMiddleware">PrepareMiddleware</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Feb 19 2020 21:28:23 GMT+0800 (GMT+08:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: RdKafkaProducer.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: RdKafkaProducer.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const EventEmitter = require('events');
+// const kafka = require('kafka-node');
+/**
+ * @function PrepareMiddleware
+ * 
+ * @param {Object} data the data want to send
+ * @returns {Boolean} whether send to kafka server
+ */
+
+ /**
+  * @typedef {Object} SendOption
+  * 
+  * @property {String} [topicSuffix=''] The suffix of the topic name.
+  */
+
+ /**
+  * @typedef {Object} ProducerOption
+  * 
+  * @param {String} name The name of current instance.
+  * @param {rdkafka.HighLevelProducer} producer 
+  * @param {String=} topic The topic where you save data in it.
+  * @param {Number=} [delayInterval=500] When pass this parameter, messages will fore to flush to kafka every `option.delayInterval` ms, otherwise messages will publish to kafka at once.
+  * @param {PrepareMiddleware=} prepareMiddleware
+  */
+
+/**
+ * The class of the producer of Kafka
+ * @class RdKafkaProducer
+ * @extends {EventEmitter}
+ */
+class RdKafkaProducer extends EventEmitter {
+    /**
+     * Creates an instance of RdKafkaProducer.
+     * 
+     * @param {ProducerOption} option
+     * @memberof RdKafkaProducer
+     */
+    constructor({
+        name,
+        topic,
+        producer,
+        delayInterval = 500,
+        prepareMiddleware
+    }) {
+        super();
+        this.name = name;
+        this.producer = producer;
+        this._clientPromise = null;
+        this._clientOk = false;
+
+        this.topic = topic;
+        if (!this.topic) {
+            throw new Error('You must give the topic paramemter.');
+        }
+        this._waitProducerReady();
+
+        this.delayInterval = delayInterval;
+        this._delayData = {};
+        this._prepareMiddleware = null;
+        if (typeof (prepareMiddleware) === 'function') {
+            this._prepareMiddleware = prepareMiddleware;
+        }
+        this._delayTimer = null;
+
+    }
+    /**
+     * @private
+     * 
+     * @memberof RdKafkaProducer
+     */
+    _cancleTimer() {
+        if (this._delayTimer) {
+            clearTimeout(this._delayTimer);
+        }
+    }
+    /**
+     * @private
+     * @param {String} zookeeperHost 
+     * 
+     * @memberof RdKafkaProducer
+     */
+
+    _waitProducerReady() {
+        const _this = this;
+        var producer = this.producer;
+        producer.connect();
+        _this._clientPromise = new Promise(function(resolve,reject) {
+            producer.once('ready',function() {
+                resolve();
+                const delayInterval = _this.delayInterval;
+                if (!delayInterval) {
+                    return;
+                }
+                setInterval(function flushRdQueue() {
+                    producer.flush();
+                },delayInterval);
+            });
+        }).catch(function() {
+            
+        });
+        producer.on('event.error',function(err) {
+            _this.emit(RdKafkaProducer.EVENT_PRODUCER_ERROR,err);
+        });
+    }
+
+
+    _getSendData(taskData) {
+        return typeof(taskData) === 'object' ?
+        JSON.stringify(taskData):
+        taskData;
+    }
+    /**
+     * 
+     * @private
+     * @param {Object} taskData 
+     * @param {SendOption} options
+     * @param {Function} callback 
+     * @memberof RdKafkaProducer
+     */
+    _sendAtOnce(taskData,options,callback) {
+        const _this = this;
+        const suffix = options.topicSuffix || '';
+        const topic = this.topic + suffix;
+        this.producer.produce(
+            topic,null,Buffer.from(this._getSendData(taskData)),null,Date.now(),
+            function(err,data) {
+                callback(err,data);
+                if (err) {
+                    _this.emit(RdKafkaProducer.EVENT_SEND_ERROR,err,taskData);
+                }
+            }
+        );
+    }
+
+    /**
+     * Send data to kafka, it will send the data to kafka every `delayInterval` ms when `delayInterval` is set. It will wait the client i
+     * 
+     * @param {Object} taskData 
+     * @param {SendOption} options
+     * @param {Function=} [callback=function(err) {}] 
+     * @returns {Boolean} Whether the taskData is valid.
+     * @memberof RdKafkaProducer
+     */
+    addData(taskData, options = { topicSuffix : '' }, callback = function() {}) {
+        if (this._prepareMiddleware &amp;&amp; this._prepareMiddleware(taskData) === false) {
+            return false;
+        }
+
+        if (this._clientOk) {
+            this._sendAtOnce(taskData,options,callback);
+        } else {
+            const _this = this;
+            this._clientPromise.then(function() {
+                _this._sendAtOnce(taskData,options,callback);
+            }).catch(function(err) {
+                callback(err);
+            });
+        }
+        
+        return true;
+    }
+
+}
+/**
+ * The event to notify that the client is ready.
+ */
+// KafkaProducer.EVENT_CLIENT_READY = 'eventClientReady';
+/**
+ * The event to notify that the client is error.
+ */
+// KafkaProducer.EVENT_CLIENT_ERROR = 'eventClientError';
+
+/**
+ * The event of notify that the client is closed.
+ */
+// KafkaProducer.EVENT_CLIENT_CLOSE = 'eventClientClose';
+
+/**
+ * The event to notify that a batch of messages have been sent finished.
+ */
+RdKafkaProducer.EVENT_DELAY_MESSAGE_SEND_FINISHED = 'eventDelayMessageSendFinished';
+/**
+ * The event to notify that the producer is ready.
+ */
+// KafkaProducer.EVENT_PRODUCER_READY = 'eventProducerReady';
+/**
+ * The event to notify the producer is error.
+ */
+RdKafkaProducer.EVENT_PRODUCER_ERROR = 'eventProducerError';
+
+/**
+ * The event emitted when an error occurs after sending data to kafka.
+ */
+RdKafkaProducer.EVENT_SEND_ERROR = 'eventSendError';
+
+module.exports = RdKafkaProducer;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="RdKafkaConsumer.html">RdKafkaConsumer</a></li><li><a href="RdKafkaConsumer.RdKafkaConsumer.html">RdKafkaConsumer</a></li><li><a href="RdKafkaProducer.html">RdKafkaProducer</a></li><li><a href="RdKafkaProducer.RdKafkaProducer.html">RdKafkaProducer</a></li><li><a href="SHKafkaProducer.html">SHKafkaProducer</a></li><li><a href="SHKafkaProducer.SHKafkaConsumer.html">SHKafkaConsumer</a></li><li><a href="SHKafkaProducer.SHKafkaProducer.html">SHKafkaProducer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#PrepareMiddleware">PrepareMiddleware</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Feb 19 2020 21:28:23 GMT+0800 (GMT+08:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

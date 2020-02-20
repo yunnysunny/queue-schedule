@@ -11,20 +11,31 @@ Kafka is a high avaliable message queue, but it lacks of consuming message with 
 
 ## How to use
 
+### Use kafka-node
 A basic example is showed as follows:
 
 ```javascript
 const kafka = require('kafka-node');
 const {expect} = require('chai');
-const {KafkaProducer,KafkaConsumer} = require('queue-schedule');
+const {SHKafkaProducer,SHKafkaConsumer} = require('queue-schedule');
 const KAFKA_HOST = process.env.KAFKA_PEERS;
 const FIST_DATA = {a:1,b:2};
 const SCHEDULE_NAME1 = 'schedule1';
 const TOPIC_NAME1 = 'topic.1';
-const PARTITION1 = 0;
+const client = new kafka.KafkaClient({kafkaHost: KAFKA_HOST});
+const producerCreater = new kafka.HighLevelProducer(client);
+const producerPromise = new Promise(function(resolve,reject) {
+    producerCreater.on('ready',function() {
+        resolve(producerCreater);
+    });
+
+    producerCreater.on('error',function(err) {
+        reject(err);
+    });
+});
 
 let hasDone = false;
-new KafkaConsumer({
+new SHKafkaConsumer({
     name: 'kafka',
     topics:[TOPIC_NAME1],
     consumerOption: {
@@ -59,10 +70,10 @@ new KafkaConsumer({
 });
 
 
-new KafkaProducer({
+new SHKafkaProducer({
     name : SCHEDULE_NAME1,
     topic: TOPIC_NAME1,
-    kafkarHost:KAFKA_HOST
+    producerPromise
 }).addData(FIST_DATA,{},function(err) {
     if (err) {
         console.error('write to queue error',err);
@@ -72,9 +83,81 @@ new KafkaProducer({
 });
 ```
 
+### Use rdkafka
+
+```javascript
+const Kafka = require('node-rdkafka');
+const {RdKafkaProducer,RdKafkaConsumer} = require('queue-schedule');
+const producerRd = new Kafka.HighLevelProducer({
+    'metadata.broker.list': KAFKA_HOST,
+    'linger.ms':0.1,
+    'queue.buffering.max.ms': 500,
+    'queue.buffering.max.messages':1000,
+    // debug: 'all'
+});
+producerRd.on('event.error',function(err) {
+    slogger.error('producer error');
+});
+producerRd.on('event.log',function(log) {
+    slogger.debug('producer log',log);
+});
+const producer = new RdKafkaProducer({
+    name : SCHEDULE_NAME1,
+    topic: TOPIC_NAME1,
+    producer:producerRd,
+    delayInterval: 500
+});
+producer.addData(FIST_DATA, {},function(err) {
+    if (err) {
+        slogger.error('write to queue error',err);
+        return done('write to queue error');
+    }
+    slogger.info('write to kafka finished');
+});
+
+
+const consumer = new Kafka.KafkaConsumer({
+    'metadata.broker.list': KAFKA_HOST,
+    'group.id': 'test-rdkafka-0',
+    'auto.offset.reset':'earliest',
+    'socket.keepalive.enable': true,
+    'socket.nagle.disable': true,
+    'enable.auto.commit': true,
+    'fetch.wait.max.ms': 5,
+    'fetch.error.backoff.ms': 5,
+    'queued.max.messages.kbytes': 1024 * 10,
+    debug:'all'
+});
+let hasDone = false;
+new RdKafkaConsumer({
+    name: 'kafka',
+    consumer,
+    topics: [ TOPIC_NAME1],
+    
+    doTask:function(messages,callback) {
+        slogger.trace(messages);
+    },
+    readCount : 1,
+    pauseTime : 500,
+    idleCheckInter: 10 * 1000
+}).on(RdKafkaConsumer.EVENT_CONSUMER_ERROR,function(err) {
+    slogger.error('consumer error',err);
+    hasDone = true;
+    done(err);
+}).on(RdKafkaConsumer.EVENT_CLIENT_READY,function() {
+    slogger.trace('the consumer client is ready');
+    
+}).on(RdKafkaConsumer.EVENT_LOG,function(log) {
+    // slogger.trace(JSON.stringify(log));
+});
+```
 ## API
 
 For detail usage, see the document online [here](https://yunnysunny.github.io/queue-schedule).
+
+## Known issue
+
+1. For the library of `kafka-node` is not stable, we suggest you using the `rdkafka` library. In othter words, you'd better use `RdKafkaProducer` and `RdKafkaConsumer` instead of `SHKafkaProducer` and `SHKafkaConsumer`.
 
 ## License
 

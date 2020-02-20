@@ -1,3 +1,31 @@
+# v2.2.0
+## Breaking Changes
+1. Rename the `KafkaProducer` to `SHKafkaProducer`, rename the `KafkaConsumer` to `SHKafkaConsumer`, drop the object of `globalEvent`.  
+2. If you still use the libary of `kafka-node`, you have to wrap an object of `Promise` and give the value of an instance of `HighLevelProducer` when the instance is ready. For example:
+
+```javascript
+const client = new kafka.KafkaClient({kafkaHost: 'the peers of you kafka cluster'});
+const producerCreater = new kafka.HighLevelProducer(client);
+const producerPromise = new Promise(function(resolve,reject) {
+    producerCreater.on('ready',function() {
+        resolve(producerCreater);
+    });
+
+    producerCreater.on('error',function(err) {
+        reject(err);
+    });
+});
+const producerSH = new SHKafkaProducer({
+    name : 'myname',
+    topic: 'mytopic',
+    producerPromise
+});
+```
+
+# v2.1.0
+## Add
+1. Add the choice of the driver of `node-librakafka` to produce and consume message, see `RdKafkaProducer` and `RdKafkaConsumer`.
+
 # v2.0.0
 ## Improvement
 1. Bump `kafka-node` to 5.0.0.
