@@ -47,7 +47,7 @@
     "async": "^2.5.0",
     "chai": "^4.1.1",
     "mocha": "^3.5.0",
-    "node-rdkafka": "^v2.7.4",
+    "node-rdkafka": "^v2.8.1",
     "node-slogger": "^0.5.1"
   }
 }

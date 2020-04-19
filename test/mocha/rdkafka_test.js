@@ -16,13 +16,15 @@ const producerRd = new Kafka.HighLevelProducer({
     'linger.ms':0.1,
     'queue.buffering.max.ms': 500,
     'queue.buffering.max.messages':1000,
-    // debug: 'all'
+    debug: 'all'
 });
 producerRd.on('event.error',function(err) {
-    slogger.error('producer error');
+    slogger.error('producer error',err);
 });
 producerRd.on('event.log',function(log) {
-    slogger.debug('producer log',log);
+    if (process.env.TRAVIS) {
+        slogger.debug('producer log',log);
+    }
 });
 const producer = new RdKafkaProducer({
     name : SCHEDULE_NAME1,
@@ -90,7 +92,7 @@ describe('test-rdkafka# ', function() {
             hasDone = true;
             done(err);
         }).on(RdKafkaConsumer.EVENT_CLIENT_READY,function() {
-            slogger.trace('the consumer client is ready');
+            slogger.info('the consumer client is ready');
             producer.addData(FIST_DATA);
         }).on(RdKafkaConsumer.EVENT_LOG,function(log) {
             if (process.env.TRAVIS) {
