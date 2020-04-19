@@ -93,7 +93,9 @@ describe('test-rdkafka# ', function() {
             slogger.trace('the consumer client is ready');
             producer.addData(FIST_DATA);
         }).on(RdKafkaConsumer.EVENT_LOG,function(log) {
-            // slogger.trace(JSON.stringify(log));
+            if (process.env.TRAVIS) {
+                slogger.trace(JSON.stringify(log));
+            }
         });
     });
 
