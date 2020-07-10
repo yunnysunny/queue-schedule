@@ -1,3 +1,7 @@
+# v2.2.1
+## Fix
+1. It may case to memory leak when using `RdKafkaConsumer`, but I can't reproduce it, just add some code to defend it.
+
 # v2.2.0
 ## Breaking Changes
 1. Rename the `KafkaProducer` to `SHKafkaProducer`, rename the `KafkaConsumer` to `SHKafkaConsumer`, drop the object of `globalEvent`.  

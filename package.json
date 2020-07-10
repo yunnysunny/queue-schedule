@@ -1,6 +1,6 @@
 {
   "name": "queue-schedule",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Queue producer and consumer tools, with kafka support.",
   "main": "index.js",
   "engines": {
@@ -15,20 +15,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/e174596549/queue-schedule.git"
+    "url": "git+ssh://git@github.com/yunnysunny/queue-schedule.git"
   },
   "keywords": [
     "queue",
     "producer",
     "consumer"
   ],
-  "author": "e174596549",
+  "author": "yunnysunny",
   "contributors": [
-    {
-      "name": "e174596549",
-      "email": "ly6819@hotmail.com",
-      "url": "https://github.com/e174596549"
-    },
     {
       "name": "yunnysunny",
       "email": "yunnysunny@gmail.com",
@@ -37,9 +32,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/e174596549/queue-schedule/issues"
+    "url": "https://github.com/yunnysunny/queue-schedule/issues"
   },
-  "homepage": "https://github.com/e174596549/queue-schedule#readme",
+  "homepage": "https://github.com/yunnysunny/queue-schedule#readme",
   "dependencies": {
     "kafka-node": "^5.0.0"
   },
@@ -47,7 +42,7 @@
     "async": "^2.5.0",
     "chai": "^4.1.1",
     "mocha": "^3.5.0",
-    "node-rdkafka": "^v2.8.1",
+    "node-rdkafka": "^v2.9.0",
     "node-slogger": "^0.5.1"
   }
 }

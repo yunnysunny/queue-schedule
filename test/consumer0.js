@@ -1,51 +1,53 @@
-var kafka = require('kafka-node');
+// const kafka = require('kafka-node');
+const Kafka = require('node-rdkafka');
+const slogger = require('node-slogger');
+const { RdKafkaConsumer } = require('../index');
+const KAFKA_HOST = process.env.KAFKA_PEERS;
+const TOPIC_NAME1 = 'topic.rdkafka.console';
 
-var Consumer = kafka.Consumer;
-var Offset = kafka.Offset;
-var Client = kafka.Client;
-var topic = 'first';
-
-var client = new Client(process.env.ZOOKEEPER_PEERS);
-client.on('ready',function() {
-  console.log('client is ready');
+const consumer = new Kafka.KafkaConsumer({
+    'metadata.broker.list': KAFKA_HOST,
+    'group.id': 'test-rdkafka-0',
+    'auto.offset.reset': 'earliest',
+    'socket.keepalive.enable': true,
+    'socket.nagle.disable': true,
+    'enable.auto.commit': true,
+    'fetch.wait.max.ms': 50,
+    'fetch.error.backoff.ms': 5,
+    'queued.max.messages.kbytes': 1024 * 10,
+    debug: 'all'
 });
-client.once('connect', function () {
-	client.loadMetadataForTopics([topic], function (error, results) {
-	  if (error) {
-	  	return console.error(error);
-	  }
-	  console.log(JSON.stringify(results[1]));
-	});
-});
-var topics = [
-    {topic: topic, partition: 0,offset:0},
-];
-var options = {
-  groupId:'myConsumerGroup', autoCommit: true/*will create a offfset record in zookeeper if set true*/, 
-  fetchMaxWaitMs: 1000, fetchMaxBytes: 1024 * 1024 , fromOffset:true
-};
+new RdKafkaConsumer({
+    name: 'kafka',
+    consumer,
+    topics: [TOPIC_NAME1],
 
-var consumer = new Consumer(client, topics, options);
-var offset = new Offset(client);
+    doTask: function (messages, callback) {
+        slogger.trace(messages);
+            // const value = messages[0].value.toString('utf8');
+            // let data = null;
+            // try {
+            //     data = JSON.parse(value);
+            // } catch (e) {
+            //     hasDone = true;
+            //     slogger.error('parse message error', e);
+            //     return;
+            // }
+            // expect(data).to.have.property('a').and.equal(rand);
+            // slogger.trace('recieve data', data);
 
-consumer.on('message', function (message) {
-  console.log(message);
-});
 
-consumer.on('error', function (err) {
-  console.log('error', err);
-});
-
-/*
-* If consumer get `offsetOutOfRange` event, fetch data from the smallest(oldest) offset
-*/
-consumer.on('offsetOutOfRange', function (topic) {
-  topic.maxNum = 2;
-  offset.fetch([topic], function (err, offsets) {
-    if (err) {
-      return console.error(err);
+        callback();
+    },
+    readCount: 1,
+    pauseTime: 500,
+    idleCheckInter: 10 * 1000
+}).on(RdKafkaConsumer.EVENT_CONSUMER_ERROR, function (err) {
+    slogger.error('consumer error', err);
+}).on(RdKafkaConsumer.EVENT_CLIENT_READY, function () {
+    slogger.info('the consumer client is ready');
+}).on(RdKafkaConsumer.EVENT_LOG, function (log) {
+    if (process.env.TRAVIS) {
+        slogger.trace(JSON.stringify(log));
     }
-    var min = Math.min(offsets[topic.topic][topic.partition]);
-    consumer.setOffset(topic.topic, topic.partition, min);
-  });
 });
