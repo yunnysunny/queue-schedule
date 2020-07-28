@@ -1,3 +1,7 @@
+# v2.3.0
+## Improvement
+1. Set the timestamp to `0` when call rdkafka's produce function.
+
 # v2.2.1
 ## Fix
 1. It may case to memory leak when using `RdKafkaConsumer`, but I can't reproduce it, just add some code to defend it.

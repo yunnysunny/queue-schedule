@@ -1,31 +1,39 @@
-var kafka = require('kafka-node');
-var Producer = kafka.Producer;
-var KeyedMessage = kafka.KeyedMessage;
-var Client = kafka.Client;
-var client = new Client(process.env.ZOOKEEPER_PEERS);
-//var argv = require('optimist').argv;
-var topic = 'first';
-var p = 0;
-var a = 0;
-var producer = new Producer(client, { requireAcks: 1 });
+// const kafka = require('kafka-node');
+const Kafka = require('node-rdkafka');
+const slogger = require('node-slogger');
+const KAFKA_HOST = process.env.KAFKA_PEERS;
+const rand = 55;
+const FIST_DATA = {a:rand,b:2};
+const TOPIC_NAME1 = 'topic.rdkafka.time';
+//queue.buffering.max.ms 0.5
+//queue.buffering.max.messages	100000
 
-producer.on('ready', function () {
-  var message = new Date().toLocaleString();
-  var keyedMessage = new KeyedMessage('keyed', 'a keyed message');
-
-  producer.send([
-    { topic: topic, partition: p, messages: [message, keyedMessage], attributes: a }
-  ], function (err, result) {
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(message,result);
+const producerRd = new Kafka.HighLevelProducer({
+    'metadata.broker.list': KAFKA_HOST,
+    'linger.ms':0.1,
+    'queue.buffering.max.ms': 500,
+    'queue.buffering.max.messages':1000,
+    debug: 'all'
+});
+producerRd.on('event.error',function(err) {
+    slogger.error('producer error',err);
+});
+producerRd.on('event.log',function(log) {
+        slogger.debug('producer log',log);
+});
+function sendData() {
+  producerRd.produce(
+    TOPIC_NAME1,null,Buffer.from(JSON.stringify(FIST_DATA)),null,0,
+    function(err,data) {
+        if (err) {
+            slogger.error(err);
+        }
     }
-    
-    process.exit();
-  });
+  );
+}
+producerRd.once('ready',function() {
+  setInterval(function() {
+    sendData();
+  }, 1000);
 });
-
-producer.on('error', function (err) {
-  console.log('error', err);
-});
+producerRd.connect();
