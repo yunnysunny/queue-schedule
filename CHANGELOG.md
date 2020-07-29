@@ -1,3 +1,7 @@
+# v2.3.1
+## Improvement
+1. Remove the flush operation in `RdKafkaProducer`.
+
 # v2.3.0
 ## Improvement
 1. Set the timestamp to `0` when call rdkafka's produce function.
