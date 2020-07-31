@@ -14,7 +14,7 @@ const TOPIC_NAME1 = 'topic.rdkafka.rdtest';
 const producerRd = new Kafka.HighLevelProducer({
     'metadata.broker.list': KAFKA_HOST,
     'queue.buffering.max.ms': 500,
-    'queue.buffering.max.messages':1000,
+    'queue.buffering.max.messages':100,
     debug: 'all'
 });
 producerRd.on('event.error',function(err) {
@@ -31,9 +31,9 @@ const producer = new RdKafkaProducer({
     producer:producerRd,
     delayInterval: 500
 });
-describe.only('test-rdkafka# ', function() {
+describe('test-rdkafka# ', function() {
     it('send data',function(done) {
-        async.times(1000,function(n,next) {
+        async.times(100,function(n,next) {
             setTimeout(function() {
                 producer.addData(FIST_DATA, {},function(err) {
                     if (err) {
@@ -47,14 +47,16 @@ describe.only('test-rdkafka# ', function() {
         },done);
     });
     it('send data2',function(done) {
-        producer.addData(FIST_DATA, {},function(err) {
-            if (err) {
-                slogger.error('write to queue error',err);
-                return done('write to queue error');
-            }
-            slogger.info('write to kafka finished');
-            done();
-        });
+        for (var i=0;i<200;i++) {
+            producer.addData(FIST_DATA, {},function(err) {
+                if (err) {
+                    slogger.error('write to queue error',err);
+                    return done('write to queue error');
+                }
+                slogger.info('write to kafka finished');
+                done();
+            });
+        }
     });
     it('create a consumer',function(done) {
         const consumer = new Kafka.KafkaConsumer({
