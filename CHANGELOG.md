@@ -1,3 +1,7 @@
+# v2.3.3
+## Fix
+1. Just fix the building error of travis-ci.
+
 # v2.3.2
 ## Fix
 1. Fix the problem of not sending data in given delay time.
