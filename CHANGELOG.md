@@ -1,3 +1,7 @@
+# v2.3.4
+## Fix
+1. Remove the cache data in memory when use rdkafka.
+
 # v2.3.3
 ## Fix
 1. Just fix the building error of travis-ci.

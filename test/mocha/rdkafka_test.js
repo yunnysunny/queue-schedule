@@ -1,4 +1,4 @@
-// const kafka = require('kafka-node');
+const async = require('async');
 const {expect} = require('chai');
 const Kafka = require('node-rdkafka');
 const slogger = require('node-slogger');
@@ -13,7 +13,6 @@ const TOPIC_NAME1 = 'topic.rdkafka.rdtest';
 
 const producerRd = new Kafka.HighLevelProducer({
     'metadata.broker.list': KAFKA_HOST,
-    'linger.ms':0.1,
     'queue.buffering.max.ms': 500,
     'queue.buffering.max.messages':1000,
     debug: 'all'
@@ -32,9 +31,22 @@ const producer = new RdKafkaProducer({
     producer:producerRd,
     delayInterval: 500
 });
-describe('test-rdkafka# ', function() {
-    it('create a producer',function(done) {
-        
+describe.only('test-rdkafka# ', function() {
+    it('send data',function(done) {
+        async.times(1000,function(n,next) {
+            setTimeout(function() {
+                producer.addData(FIST_DATA, {},function(err) {
+                    if (err) {
+                        slogger.error('write to queue error',err);
+                        return next('write to queue error');
+                    }
+                    slogger.info('write to kafka finished');
+                    next();
+                });
+            } , n);
+        },done);
+    });
+    it('send data2',function(done) {
         producer.addData(FIST_DATA, {},function(err) {
             if (err) {
                 slogger.error('write to queue error',err);
