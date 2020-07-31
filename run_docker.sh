@@ -19,7 +19,7 @@ topics=(
   "topic.error"
   "topic.2"
   "topic.3"
-  "topic.5"，
+  "topic.5"
   "topic.rdkafka.rdtest"
 )
 
