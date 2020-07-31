@@ -14,7 +14,7 @@ const TOPIC_NAME1 = 'topic.rdkafka.rdtest';
 const producerRd = new Kafka.HighLevelProducer({
     'metadata.broker.list': KAFKA_HOST,
     'queue.buffering.max.ms': 500,
-    'queue.buffering.max.messages':100,
+    'batch.num.messages':100,
     debug: 'all'
 });
 producerRd.on('event.error',function(err) {
@@ -47,16 +47,16 @@ describe('test-rdkafka# ', function() {
         },done);
     });
     it('send data2',function(done) {
-        for (var i=0;i<200;i++) {
+        async.times(200, function(n, next) {
             producer.addData(FIST_DATA, {},function(err) {
                 if (err) {
                     slogger.error('write to queue error',err);
-                    return done('write to queue error');
+                    return next('write to queue error');
                 }
                 slogger.info('write to kafka finished');
-                done();
+                next();
             });
-        }
+        }, done);
     });
     it('create a consumer',function(done) {
         const consumer = new Kafka.KafkaConsumer({
