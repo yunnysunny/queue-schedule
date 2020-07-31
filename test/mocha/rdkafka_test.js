@@ -7,7 +7,7 @@ const KAFKA_HOST = process.env.KAFKA_PEERS;
 const rand = 55;
 const FIST_DATA = {a:rand,b:2};
 const SCHEDULE_NAME1 = 'schedule1';
-const TOPIC_NAME1 = 'topic.rdkafka.' + Math.random();
+const TOPIC_NAME1 = 'topic.rdkafka.rdtest';
 //queue.buffering.max.ms 0.5
 //queue.buffering.max.messages	100000
 
@@ -47,7 +47,7 @@ describe('test-rdkafka# ', function() {
     it('create a consumer',function(done) {
         const consumer = new Kafka.KafkaConsumer({
             'metadata.broker.list': KAFKA_HOST,
-            'group.id': 'test-rdkafka-0',
+            'group.id': 'test-rdkafka-' + Math.random(),
             'auto.offset.reset':'earliest',
             'socket.keepalive.enable': true,
             'socket.nagle.disable': true,
@@ -55,7 +55,7 @@ describe('test-rdkafka# ', function() {
             'fetch.wait.max.ms': 50,
             'fetch.error.backoff.ms': 5,
             'queued.max.messages.kbytes': 1024 * 10,
-            debug:'all'
+            debug:'consumer'
         });
         let hasDone = false;
         new RdKafkaConsumer({
@@ -69,6 +69,9 @@ describe('test-rdkafka# ', function() {
                     let data = null;
                     try {
                         data = JSON.parse(value);
+                        if (Array.isArray(data)) {
+                            data = JSON.parse(data[0]);
+                        }
                     } catch (e) {
                         hasDone = true;
                         slogger.error('parse message error',e);

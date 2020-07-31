@@ -1,3 +1,7 @@
+# v2.3.2
+## Fix
+1. Fix the problem of not sending data in given delay time.
+
 # v2.3.1
 ## Improvement
 1. Remove the flush operation in `RdKafkaProducer`.
