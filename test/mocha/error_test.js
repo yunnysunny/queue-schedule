@@ -1,16 +1,38 @@
 const {expect} = require('chai');
-const {SHKafkaProducer} = require('../../index');
-const {producerPromise,producer} = require('./config');
+const slogger = require('node-slogger');
+const Kafka = require('node-rdkafka');
+const {SHKafkaProducer, RdKafkaProducer} = require('../../index');
+const {producerPromise} = require('./config');
 
 const SCHEDULE_NAME1 = 'schedule1';
 const TOPIC_NAME1 = 'topic.error';
 
 describe('error test#',function() {
-    // it('wait for client ready',function(done) {
-    //     producerPromise.then(function() {
-    //         done();
-    //     });
-    // });
+    it('should return error when the broker address is not availabe', function(done) {
+        const producerRd = new Kafka.HighLevelProducer({
+            'metadata.broker.list': '1.1.1.1:9988',
+            'queue.buffering.max.ms': 500,
+            'batch.num.messages':100,
+            debug: 'all'
+        });
+        producerRd.on('event.error',function(err) {
+            slogger.error('producer error',err);
+        });
+        producerRd.on('event.log',function(log) {
+            if (process.env.TRAVIS) {
+                slogger.debug('producer log',log);
+            }
+        });
+        const producer = new RdKafkaProducer({
+            name : SCHEDULE_NAME1,
+            topic: TOPIC_NAME1,
+            producer:producerRd,
+        });
+        producer.addData({}, {},function(err) {
+            expect(err).to.be.not.null;
+            done();
+        });
+    });
     it('should emit error event', function(done) {
         // const begin = new Date().getTime();
         const len = 10000;
