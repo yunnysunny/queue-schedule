@@ -1,3 +1,8 @@
+# v2.3.5
+## Fix
+1. Fix the memory leak when the connection of broker is failed in `RdKafkaProducer`.
+2. Fix the the broken when sending message while the connection is not ready in `SHKafkaProducer`.
+
 # v2.3.4
 ## Fix
 1. Remove the cache data in memory when use rdkafka.
