@@ -3,6 +3,7 @@ const slogger = require('node-slogger');
 const Kafka = require('node-rdkafka');
 const {SHKafkaProducer, RdKafkaProducer} = require('../../index');
 const {producerPromise} = require('./config');
+const KAFKA_HOST = process.env.KAFKA_PEERS;
 
 const SCHEDULE_NAME1 = 'schedule1';
 const TOPIC_NAME1 = 'topic.error';
@@ -33,6 +34,31 @@ describe('error test#',function() {
             done();
         });
     });
+    it('should return error when the send data is too long', function(done) {
+        const producerRd = new Kafka.HighLevelProducer({
+            'metadata.broker.list': KAFKA_HOST,
+            'queue.buffering.max.ms': 500,
+            'batch.num.messages':100,
+            debug: 'all'
+        });
+        producerRd.on('event.error',function(err) {
+            slogger.error('producer error',err);
+        });
+        producerRd.on('event.log',function(log) {
+            if (process.env.TRAVIS) {
+                slogger.debug('producer log',log);
+            }
+        });
+        const producer = new RdKafkaProducer({
+            topic: TOPIC_NAME1,
+            producer:producerRd,
+        });
+        const data = 'a'.repeat(1024 * 1024 * 2);
+        producer.addData(data, {},function(err) {
+            expect(err).to.be.not.null;
+            done();
+        });
+    });
     it('should emit error event', function(done) {
         // const begin = new Date().getTime();
         const len = 10000;
@@ -59,6 +85,7 @@ describe('error test#',function() {
         });
         
     });
+
     // it('should emitt close when broker not exist',function(done) {
     //     const HOST_NOT_EXIST = 'localhost:9093';
     //     var hasDone = false;
