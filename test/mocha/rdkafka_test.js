@@ -29,7 +29,6 @@ const producer = new RdKafkaProducer({
     name : SCHEDULE_NAME1,
     topic: TOPIC_NAME1,
     producer:producerRd,
-    delayInterval: 500
 });
 describe('test-rdkafka# ', function() {
     it('send data',function(done) {
