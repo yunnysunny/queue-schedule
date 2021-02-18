@@ -1,12 +1,20 @@
 const {expect} = require('chai');
 const slogger = require('node-slogger');
 const Kafka = require('node-rdkafka');
-const {SHKafkaProducer, RdKafkaProducer} = require('../../index');
+const { Kafka: KafkaJs } = require('kafkajs');
+
+const {SHKafkaProducer, RdKafkaProducer, KafkaJsProducer} = require('../../index');
 const {producerPromise} = require('./config');
 const KAFKA_HOST = process.env.KAFKA_PEERS;
 
 const SCHEDULE_NAME1 = 'schedule1';
 const TOPIC_NAME1 = 'topic.error';
+const client =  new KafkaJs({
+    brokers: ['none-exist:9092'],
+    retry: {
+        retries: 1
+    },
+});
 
 describe('error test#',function() {
     it('should return error when the broker address is not availabe', function(done) {
@@ -86,20 +94,15 @@ describe('error test#',function() {
         
     });
 
-    // it('should emitt close when broker not exist',function(done) {
-    //     const HOST_NOT_EXIST = 'localhost:9093';
-    //     var hasDone = false;
-    //     globalEvent.on(globalEvent.EVENT_CLIENT_CLOSE,function(kafkaHost) {
-    //         if (kafkaHost === HOST_NOT_EXIST) {
-    //             if (!hasDone) {done();} 
-    //             hasDone = true;
-    //         }
-    //     });
-    //     new KafkaProducer({
-    //         name : SCHEDULE_NAME1,
-    //         topic: TOPIC_NAME1,
-    //         kafkaHost:HOST_NOT_EXIST,
-    //     });
-        
-    // });
+    it('should emit error with kafkajs\' producer',function(done) {
+        const producer = new KafkaJsProducer({
+            name : SCHEDULE_NAME1,
+            topic: TOPIC_NAME1,
+            client,
+        });
+        producer.addData({a:1}, {},function(err) {
+            expect(err).to.not.be.null;
+            return done();
+        });
+    });
 });
