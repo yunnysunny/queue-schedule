@@ -151,6 +151,67 @@ new RdKafkaConsumer({
     // slogger.trace(JSON.stringify(log));
 });
 ```
+
+### Using kafkajs
+
+```javascript
+const { Kafka } = require('kafkajs');
+const {KafkaJsProducer,KafkaJsConsumer} = require('queue-schedule');
+
+const FIST_DATA = {a:1,b:2};
+const SCHEDULE_NAME1 = 'schedule1';
+const TOPIC_NAME1 = 'topic.kafkajs';
+const client =  new Kafka({
+    brokers: ['xxxx', 'yyyy']
+});
+
+const producer = new KafkaJsProducer({
+    topic: TOPIC_NAME1,
+    client,
+});
+producer.addData(FIST_DATA, {},function(err) {
+    if (err) {
+        console.error('write to queue error',err);
+        return;
+    }
+    console.info('write to kafka finished');
+});
+producer.on(KafkaJsProducer.EVENT_PRODUCER_ERROR, function(err) {
+    console.error('error in consumer', err);
+});
+
+new KafkaJsConsumer({
+    name: 'kafka',
+    client,
+    topic: TOPIC_NAME1,
+    consumerOption: {
+        groupId: 'kafkajs',
+        fromBeginning: true
+    },
+    doTask:function(messages,callback) {
+        console.log(messages);
+        const value = messages[0].value;//read the first value
+        let data = null;
+        try {
+            data = JSON.parse(value);
+            console.log('recieve data',data);
+        } catch (e) {
+            console.error('parse message error',e);
+        }
+
+        callback();//the next loop
+    },
+    readCount : 1,
+    pauseTime : 500,
+    idleCheckInter: 10 * 1000
+}).on(KafkaJsConsumer.EVENT_CONSUMER_ERROR,function(err) {
+    console.error('consumer error',err);
+    hasDone = true;
+    done(err);
+}).on(KafkaJsConsumer.EVENT_CONSUMER_READY,function() {
+    console.log('the consumer is ready');
+});
+```
 ## API
 
 For detail usage, see the document online [here](https://yunnysunny.github.io/queue-schedule).
