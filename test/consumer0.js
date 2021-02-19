@@ -1,53 +1,40 @@
 // const kafka = require('kafka-node');
-const Kafka = require('node-rdkafka');
+const { Kafka } = require('kafkajs');
 const slogger = require('node-slogger');
-const { RdKafkaConsumer } = require('../index');
+const { KafkaJsConsumer } = require('../index');
 const KAFKA_HOST = process.env.KAFKA_PEERS;
-const TOPIC_NAME1 = 'topic.rdkafka.console';
+const TOPIC_NAME = process.env.TOPIC_NAME;
 
-const consumer = new Kafka.KafkaConsumer({
-    'metadata.broker.list': KAFKA_HOST,
-    'group.id': 'test-rdkafka-0',
-    'auto.offset.reset': 'earliest',
-    'socket.keepalive.enable': true,
-    'socket.nagle.disable': true,
-    'enable.auto.commit': true,
-    'fetch.wait.max.ms': 50,
-    'fetch.error.backoff.ms': 5,
-    'queued.max.messages.kbytes': 1024 * 10,
-    debug: 'all'
+const client =  new Kafka({
+    brokers: KAFKA_HOST.split(',')
 });
-new RdKafkaConsumer({
+new KafkaJsConsumer({
     name: 'kafka',
-    consumer,
-    topics: [TOPIC_NAME1],
-
-    doTask: function (messages, callback) {
-        slogger.trace(messages);
-            // const value = messages[0].value.toString('utf8');
+    client,
+    topic: TOPIC_NAME,
+    consumerOption: {
+        groupId: 'kafkajs',
+        fromBeginning: true
+    },
+    doTask:function(messages,callback) {//console.log(messages);
+            // const value = messages[0].value;
             // let data = null;
             // try {
             //     data = JSON.parse(value);
             // } catch (e) {
             //     hasDone = true;
-            //     slogger.error('parse message error', e);
-            //     return;
+            //     console.error('parse message error',e);
+            //     return done('parse message error');
             // }
-            // expect(data).to.have.property('a').and.equal(rand);
-            // slogger.trace('recieve data', data);
+            slogger.info('recieve data',messages.length);
 
-
+            
         callback();
     },
-    readCount: 1,
-    pauseTime: 500,
-    idleCheckInter: 10 * 1000
-}).on(RdKafkaConsumer.EVENT_CONSUMER_ERROR, function (err) {
-    slogger.error('consumer error', err);
-}).on(RdKafkaConsumer.EVENT_CLIENT_READY, function () {
-    slogger.info('the consumer client is ready');
-}).on(RdKafkaConsumer.EVENT_LOG, function (log) {
-    if (process.env.TRAVIS) {
-        slogger.trace(JSON.stringify(log));
-    }
+    readCount : 10,
+    pauseTime : 5,
+}).on(KafkaJsConsumer.EVENT_CONSUMER_ERROR,function(err) {
+    console.error('consumer error',err);
+}).on(KafkaJsConsumer.EVENT_CONSUMER_READY,function() {
+    console.log('the consumer is ready');
 });
