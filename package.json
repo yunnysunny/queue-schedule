@@ -45,7 +45,7 @@
     "kafkajs": "^1.15.0",
     "mocha": "^3.5.0",
     "node-rdkafka": "^v2.9.0",
-    "node-slogger": "^0.5.1",
+    "node-slogger": "^2.2.1",
     "sinon": "^9.2.4"
   }
 }
