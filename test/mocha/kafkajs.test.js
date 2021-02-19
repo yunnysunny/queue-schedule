@@ -10,7 +10,8 @@ const TOPIC_NAME1 = 'topic.kafkajs';
 const client =  new Kafka({
     brokers: KAFKA_HOST.split(',')
 });
-describe('kafkajs test# ', function() {
+
+describe.only('kafkajs test# ', function() {
     it('create an immediately producer',function(done) {
         const producer = new KafkaJsProducer({
             name : SCHEDULE_NAME1,
@@ -38,12 +39,31 @@ describe('kafkajs test# ', function() {
         let hasDone = false;
         producer.on(KafkaJsProducer.EVENT_PRODUCER_READY, function() {
             const spy = sinon.spy(producer.producer, 'sendBatch');
+
+            producer.on(KafkaJsProducer.EVENT_DELAY_MESSAGE_SEND_FINISHED, function(err) {
+                if (err) {
+                    hasDone = true;
+                    console.error('delay send error', err);
+                    producer.producer.sendBatch.restore();
+                    return done(err);
+                }
+                const {topicMessages: _needSendTopics} = spy.getCall(0).args[0];
+                expect(_needSendTopics.length).to.be.equal(1);
+                expect(_needSendTopics[0]).to.have.property('topic').and.equal(TOPIC_NAME1);
+                expect(_needSendTopics[0]).to.have.property('messages').and.have.property('length').and.equal(COUNT);
+                producer.producer.sendBatch.restore();
+                done();
+            });
             for (var i=0;i<COUNT;i++) {
-                producer.addData(FIST_DATA, {},function(err) {
+                producer.addData({
+                    ...FIST_DATA,
+                    is_delay: true
+                }, {},function(err) {
                     if (err) {
                         if (!hasDone) {
                             console.error('write to queue error',err);
                             hasDone = true;
+                            producer.producer.sendBatch.restore();
                             return done('write to queue error');
                         }
                     }
@@ -51,18 +71,6 @@ describe('kafkajs test# ', function() {
                     // return done();
                 });
             }
-            
-            setTimeout(function() {
-                const _needSendTopics = spy.getCall(0).args[0];
-                expect(_needSendTopics.length).to.be.equal(1);
-                expect(_needSendTopics[0]).to.have.property('topic').and.equal(TOPIC_NAME1);
-                expect(_needSendTopics[0]).to.have.property('messages').and.have.property('length').and.equal(COUNT);
-                producer.producer.sendBatch.restore();
-                done();
-            }, DELAY_TIME * 2);
-        });
-        producer.on(KafkaJsProducer.EVENT_PRODUCER_ERROR, function(err) {
-            done(err);
         });
         
     });
