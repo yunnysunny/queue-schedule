@@ -1,6 +1,6 @@
 // const kafka = require('kafka-node');
 const {expect} = require('chai');
-const { Kafka } = require('kafkajs');
+const { Kafka, CompressionTypes } = require('kafkajs');
 const sinon = require('sinon');
 const {KafkaJsProducer,KafkaJsConsumer} = require('../../index');
 const KAFKA_HOST = process.env.KAFKA_PEERS;
@@ -11,7 +11,7 @@ const client =  new Kafka({
     brokers: KAFKA_HOST.split(',')
 });
 
-describe.only('kafkajs test# ', function() {
+describe('kafkajs test# ', function() {
     it('create an immediately producer',function(done) {
         const producer = new KafkaJsProducer({
             name : SCHEDULE_NAME1,
@@ -30,11 +30,15 @@ describe.only('kafkajs test# ', function() {
     it('create a delay producer', function(done) {
         const DELAY_TIME = 500;
         const COUNT = 3;
+        const TIMEOUT = 30000;
         const producer = new KafkaJsProducer({
             name : SCHEDULE_NAME1,
             topic: TOPIC_NAME1,
             client,
-            delayInterval: DELAY_TIME
+            delayInterval: DELAY_TIME,
+            acks: -1,
+            timeout: TIMEOUT,
+            compression: CompressionTypes.GZIP
         });
         let hasDone = false;
         producer.on(KafkaJsProducer.EVENT_PRODUCER_READY, function() {
@@ -47,7 +51,10 @@ describe.only('kafkajs test# ', function() {
                     producer.producer.sendBatch.restore();
                     return done(err);
                 }
-                const {topicMessages: _needSendTopics} = spy.getCall(0).args[0];
+                const {topicMessages: _needSendTopics, acks, timeout, compression} = spy.getCall(0).args[0];
+                expect(acks).to.be.equal(-1);
+                expect(timeout).to.be.equal(TIMEOUT);
+                expect(compression).to.be.equal(CompressionTypes.GZIP);
                 expect(_needSendTopics.length).to.be.equal(1);
                 expect(_needSendTopics[0]).to.have.property('topic').and.equal(TOPIC_NAME1);
                 expect(_needSendTopics[0]).to.have.property('messages').and.have.property('length').and.equal(COUNT);
@@ -86,7 +93,7 @@ describe.only('kafkajs test# ', function() {
                 groupId: 'kafkajs',
                 fromBeginning: true
             },
-            doTask:function(messages,callback) {console.log(messages);
+            doTask:function(messages,callback) {//console.log(messages);
                 if (!hasDone) {
                     const value = messages[0].value;
                     let data = null;
