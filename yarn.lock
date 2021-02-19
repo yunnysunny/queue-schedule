@@ -957,10 +957,10 @@ node-rdkafka@^v2.9.0:
     bindings "^1.3.1"
     nan "^2.14.0"
 
-node-slogger@^0.5.1:
-  version "0.5.2"
-  resolved "https://registry.npm.taobao.org/node-slogger/download/node-slogger-0.5.2.tgz#56151f743f881ac3692e282d3d5c09b62adc45c8"
-  integrity sha1-VhUfdD+IGsNpLigtPVwJtircRcg=
+node-slogger@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.npm.taobao.org/node-slogger/download/node-slogger-2.2.1.tgz#0ff24914eb2dce6bbe0aedc549e927478aba3c39"
+  integrity sha1-D/JJFOstzmu+Cu3FSeknR4q6PDk=
 
 noop-logger@^0.1.1:
   version "0.1.1"
