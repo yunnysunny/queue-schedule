@@ -1,10 +1,10 @@
 {
   "name": "queue-schedule",
-  "version": "2.3.5",
+  "version": "2.4.0",
   "description": "Queue producer and consumer tools, with kafka support.",
   "main": "index.js",
   "engines": {
-    "node": ">=6.0"
+    "node": ">=8.0"
   },
   "scripts": {
     "bump_path": "npm version patch -m \"upgrade to %s\"",

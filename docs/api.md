@@ -626,13 +626,16 @@ The consume function.Do not call this function manual!
 ## KafkaJsProducerOption : <code>Object</code>
 **Kind**: global typedef  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| name | <code>String</code> | The name of current instance. |
-| client | <code>client</code> | The client instance of kafkajs. |
-| topic | <code>String</code> | The topic where you save data in it. |
-| [delayInterval] | <code>Number</code> | When pass this parameter, messages will publish to kafka every `option.delayInterval` ms, otherwise messages will publish to kafka at once. |
-| [prepareMiddleware] | [<code>PrepareMiddleware</code>](#PrepareMiddleware) |  |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| name | <code>String</code> |  | The name of current instance. |
+| client | <code>client</code> |  | The client instance of kafkajs. |
+| topic | <code>String</code> |  | The topic where you save data in it. |
+| [delayInterval] | <code>Number</code> |  | When pass this parameter, messages will publish to kafka every `option.delayInterval` ms, otherwise messages will publish to kafka at once. |
+| [prepareMiddleware] | [<code>PrepareMiddleware</code>](#PrepareMiddleware) |  |  |
+| [acks] | <code>Number</code> | <code>-1</code> | Control the number of required acks. -1 = all insync replicas must acknowledge (default) 0 = no acknowledgments 1 = only waits for the leader to acknowledge |
+| [timeout] | <code>Number</code> | <code>30000</code> | The time to await a response in ms |
+| [compression] | <code>Number</code> | <code>CompressionTypes.None</code> | Compression codec, it use none compression as default. When pass `CompressionTypes.GZIP`, it will use gzip compression. |
 
 <a name="DoTask"></a>
 

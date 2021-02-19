@@ -1,3 +1,7 @@
+# v2.4.0
+## Add
+1. Add the support of kafkajs, see `KafkaJsProducer` and `KafkaJsConsumer`.
+
 # v2.3.5
 ## Fix
 1. Fix the memory leak when the connection of broker is failed in `RdKafkaProducer`.
