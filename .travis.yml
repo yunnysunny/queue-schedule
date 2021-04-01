@@ -5,6 +5,7 @@ service: docker
 node_js:
   - "10"
   - "12"
+  - "14"
 
 cache:
   directories:
