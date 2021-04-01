@@ -53,17 +53,17 @@
 <dd></dd>
 <dt><a href="#RdKafkaConsumerOption">RdKafkaConsumerOption</a></dt>
 <dd></dd>
-<dt><a href="#SendOption">SendOption</a> : <code>Object</code></dt>
+<dt><a href="#RdKafkaSendOption">RdKafkaSendOption</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="#RdKafkaProducerOption">RdKafkaProducerOption</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="#DoTask">DoTask</a> : <code>function</code></dt>
 <dd></dd>
-<dt><a href="#ConsumerOption">ConsumerOption</a></dt>
+<dt><a href="#SHKafkaConsumerOption">SHKafkaConsumerOption</a></dt>
 <dd></dd>
 <dt><a href="#SHKafkaConsumerOption">SHKafkaConsumerOption</a></dt>
 <dd></dd>
-<dt><a href="#SendOption">SendOption</a> : <code>Object</code></dt>
+<dt><a href="#SHKafkaSendOption">SHKafkaSendOption</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="#SHKafkaProducerOption">SHKafkaProducerOption</a> : <code>Object</code></dt>
 <dd></dd>
@@ -258,7 +258,7 @@ Send data to kafka.
 | Param | Type | Default |
 | --- | --- | --- |
 | taskData | <code>Object</code> |  | 
-| options | [<code>SendOption</code>](#SendOption) |  | 
+| options | [<code>RdKafkaSendOption</code>](#RdKafkaSendOption) |  | 
 | [callback] | <code>function</code> | <code>function(err) {}</code> | 
 
 <a name="RdKafkaProducer.EVENT_DELAY_MESSAGE_SEND_FINISHED"></a>
@@ -364,7 +364,7 @@ Send data to kafka, it will send the data to kafka every `delayInterval` ms when
 | Param | Type | Default |
 | --- | --- | --- |
 | taskData | <code>Object</code> |  | 
-| options | [<code>SendOption</code>](#SendOption) |  | 
+| options | [<code>SHKafkaSendOption</code>](#SHKafkaSendOption) |  | 
 | [callback] | <code>function</code> | <code>function(err) {}</code> | 
 
 <a name="SHKafkaProducer.EVENT_DELAY_MESSAGE_SEND_FINISHED"></a>
@@ -533,9 +533,9 @@ The event emitted when an error occurs after sending data to kafka.
 | doTask | [<code>DoTask</code>](#DoTask) | The consume process function. |
 | idleCheckInter | <code>Number</code> | The instance of KafkaConsumer has a timer inner, to check whether the process of `doTask` is idle. The timer will trigger every `idleCheckInter` ms. |
 
-<a name="SendOption"></a>
+<a name="RdKafkaSendOption"></a>
 
-## SendOption : <code>Object</code>
+## RdKafkaSendOption : <code>Object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -570,9 +570,9 @@ The event emitted when an error occurs after sending data to kafka.
 | --- | --- |
 | messages | <code>Array.&lt;Object&gt;</code> | 
 
-<a name="ConsumerOption"></a>
+<a name="SHKafkaConsumerOption"></a>
 
-## ConsumerOption
+## SHKafkaConsumerOption
 **Kind**: global typedef  
 
 | Param | Type | Default | Description |
@@ -599,15 +599,15 @@ The event emitted when an error occurs after sending data to kafka.
 | name | <code>String</code> | The name of current instance. |
 | [kafkaHost] | <code>String</code> | The host of the broker of kafka. |
 | topics | <code>Array.&lt;String&gt;</code> | The topics that will be consumed. |
-| [consumerOption] | [<code>ConsumerOption</code>](#ConsumerOption) | The option to create a new instance of `Kafka.ConsumerGroup`. |
+| [consumerOption] | [<code>SHKafkaConsumerOption</code>](#SHKafkaConsumerOption) | The option to create a new instance of `Kafka.ConsumerGroup`. |
 | readCount | <code>Number</code> | After reading the count of `readCount`, the consumer will be paused. |
 | pauseTime | <code>Number</code> | The duration of pause time, after that the consumer will be continued. |
 | doTask | [<code>DoTask</code>](#DoTask) | The consume process function. |
 | idleCheckInter | <code>Number</code> | The instance of KafkaConsumer has a timer inner, to check whether the process of `doTask` is idle. The timer will trigger every `idleCheckInter` ms. |
 
-<a name="SendOption"></a>
+<a name="SHKafkaSendOption"></a>
 
-## SendOption : <code>Object</code>
+## SHKafkaSendOption : <code>Object</code>
 **Kind**: global typedef  
 **Properties**
 
