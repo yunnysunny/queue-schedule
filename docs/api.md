@@ -545,7 +545,7 @@ The event emitted when an error occurs after sending data to kafka.
 | [partition] | <code>Number</code> | <code></code> | The partition number to produce to. |
 | [key] | <code>Buffer</code> | <code></code> | The key associated with the message. |
 | [timestamp] | <code>Number</code> | <code>0</code> | Timestamp to send with the message. |
-| [headers] | <code>Object</code> | <code></code> | A list of custom key value pairs that provide message metadata. |
+| [headers] | <code>Array.&lt;{String:String}&gt;</code> | <code></code> | A list of custom key value pairs that provide message metadata. |
 
 <a name="RdKafkaProducerOption"></a>
 
