@@ -12,6 +12,43 @@ const client =  new Kafka({
 });
 
 describe('kafkajs test# ', function() {
+    it('shoud not send empty value', function() {
+        const producer = new KafkaJsProducer({
+            topic: TOPIC_NAME1,
+            client,
+        });
+        expect(producer.addData(null)).to.be.equal(false);
+        expect(producer.addData()).to.be.equal(false);
+    });
+    it('should keep plain', function(done) {
+        const producer = new KafkaJsProducer({
+            topic: 'plain-string-topic',
+            client,
+        });
+        const STR = 'AA';
+        const spy = sinon.spy(producer, '_getSendData');
+        producer.on(KafkaJsProducer.EVENT_PRODUCER_READY, function() {
+            producer.addData(STR);
+            expect(spy.returnValues[0]).to.be.equal(STR);
+            producer._getSendData.restore();
+            done();
+        });
+    });
+    it('should transform to buffer', function(done) {
+        const producer = new KafkaJsProducer({
+            topic: 'plain-string-topic',
+            client,
+            encoder: Buffer.from
+        });
+        const ARRAY = [1,2];
+        const spy = sinon.spy(producer, '_getSendData');
+        producer.on(KafkaJsProducer.EVENT_PRODUCER_READY, function() {
+            producer.addData(ARRAY);
+            expect(Buffer.isBuffer(spy.returnValues[0])).to.be.true;
+            producer._getSendData.restore();
+            done();
+        });
+    });
     it('create an immediately producer',function(done) {
         const producer = new KafkaJsProducer({
             name : SCHEDULE_NAME1,

@@ -2,6 +2,7 @@ const async = require('async');
 const {expect} = require('chai');
 const Kafka = require('node-rdkafka');
 const slogger = require('node-slogger');
+const sinon = require('sinon');
 const {RdKafkaProducer,RdKafkaConsumer} = require('../../index');
 const KAFKA_HOST = process.env.KAFKA_PEERS;
 const rand = 55;
@@ -31,6 +32,11 @@ const producer = new RdKafkaProducer({
     producer:producerRd,
 });
 describe('test-rdkafka# ', function() {
+    it('shoud not send empty value', function() {
+        expect(producer.addData(null)).to.be.equal(false);
+        expect(producer.addData()).to.be.equal(false);
+    });
+    
     it('send data',function(done) {
         async.times(100,function(n,next) {
             setTimeout(function() {
@@ -116,5 +122,33 @@ describe('test-rdkafka# ', function() {
             }
         });
     });
-
+    it('should keep plain', function(done) {
+        const producer = new RdKafkaProducer({
+            topic: 'plain-string-topic',
+            producer:producerRd,
+        });
+        const STR = 'AA';
+        const spy = sinon.spy(producer, '_getSendData');
+        producer.on(RdKafkaProducer.EVENT_PRODUCER_READY, function() {
+            producer.addData(STR);
+            expect(spy.returnValues[0]).to.be.equal(STR);
+            producer._getSendData.restore();
+            done();
+        });
+    });
+    it('should transform to buffer', function(done) {
+        const producer = new RdKafkaProducer({
+            topic: 'plain-string-topic',
+            producer:producerRd,
+            encoder: Buffer.from
+        });
+        const ARRAY = [1,2];
+        const spy = sinon.spy(producer, '_getSendData');
+        producer.on(RdKafkaProducer.EVENT_PRODUCER_READY, function() {
+            producer.addData(ARRAY);
+            expect(Buffer.isBuffer(spy.returnValues[0])).to.be.true;
+            producer._getSendData.restore();
+            done();
+        });
+    });
 });

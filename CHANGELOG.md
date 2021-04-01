@@ -1,3 +1,9 @@
+# v2.5.0
+
+## Add
+
+1. Add the feature of encoding data manual, see `RdKafkaProducer` and `KafkaJsProducer`.
+
 # v2.4.0
 ## Add
 1. Add the support of kafkajs, see `KafkaJsProducer` and `KafkaJsConsumer`.
