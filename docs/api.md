@@ -2,17 +2,23 @@
 
 <dl>
 <dt><a href="#KafkaJsConsumer">KafkaJsConsumer</a> ⇐ <code>EventEmitter</code></dt>
-<dd></dd>
+<dd><p>The class of consumer with kafka-js</p>
+</dd>
 <dt><a href="#KafkaJsProducer">KafkaJsProducer</a> ⇐ <code>EventEmitter</code></dt>
-<dd></dd>
+<dd><p>The class of the producer with kafka-js</p>
+</dd>
 <dt><a href="#RdKafkaConsumer">RdKafkaConsumer</a> ⇐ <code>EventEmitter</code></dt>
-<dd></dd>
+<dd><p>The class of consumer with node-rdkafka</p>
+</dd>
 <dt><a href="#RdKafkaProducer">RdKafkaProducer</a> ⇐ <code>EventEmitter</code></dt>
-<dd></dd>
+<dd><p>The class of the producer with node-rdkafka</p>
+</dd>
+<dt><a href="#SHKafkaConsumer">SHKafkaConsumer</a> ⇐ <code>EventEmitter</code></dt>
+<dd><p>The class of consumer with kafka-node</p>
+</dd>
 <dt><a href="#SHKafkaProducer">SHKafkaProducer</a> ⇐ <code>EventEmitter</code></dt>
-<dd></dd>
-<dt><a href="#SHKafkaProducer">SHKafkaProducer</a> ⇐ <code>EventEmitter</code></dt>
-<dd></dd>
+<dd><p>The class of the producer with kafka-node</p>
+</dd>
 </dl>
 
 ## Functions
@@ -21,6 +27,8 @@
 <dt><a href="#PrepareMiddleware">PrepareMiddleware(data)</a> ⇒ <code>Boolean</code></dt>
 <dd></dd>
 <dt><a href="#PrepareMiddleware">PrepareMiddleware(data)</a> ⇒ <code>Boolean</code></dt>
+<dd></dd>
+<dt><a href="#EncoderFunction">EncoderFunction(data)</a> ⇒ <code>any</code></dt>
 <dd></dd>
 <dt><a href="#PrepareMiddleware">PrepareMiddleware(data)</a> ⇒ <code>Boolean</code></dt>
 <dd></dd>
@@ -43,63 +51,40 @@
 <dd></dd>
 <dt><a href="#ConsumerOption">ConsumerOption</a></dt>
 <dd></dd>
-<dt><a href="#KafkaConsumerOption">KafkaConsumerOption</a></dt>
+<dt><a href="#RdKafkaConsumerOption">RdKafkaConsumerOption</a></dt>
 <dd></dd>
 <dt><a href="#SendOption">SendOption</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="#ProducerOption">ProducerOption</a> : <code>Object</code></dt>
+<dt><a href="#RdKafkaProducerOption">RdKafkaProducerOption</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="#DoTask">DoTask</a> : <code>function</code></dt>
 <dd></dd>
 <dt><a href="#ConsumerOption">ConsumerOption</a></dt>
 <dd></dd>
-<dt><a href="#KafkaConsumerOption">KafkaConsumerOption</a></dt>
+<dt><a href="#SHKafkaConsumerOption">SHKafkaConsumerOption</a></dt>
 <dd></dd>
 <dt><a href="#SendOption">SendOption</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="#ProducerOption">ProducerOption</a> : <code>Object</code></dt>
+<dt><a href="#SHKafkaProducerOption">SHKafkaProducerOption</a> : <code>Object</code></dt>
 <dd></dd>
 </dl>
 
 <a name="KafkaJsConsumer"></a>
 
 ## KafkaJsConsumer ⇐ <code>EventEmitter</code>
+The class of consumer with kafka-js
+
 **Kind**: global class  
 **Extends**: <code>EventEmitter</code>  
 
 * [KafkaJsConsumer](#KafkaJsConsumer) ⇐ <code>EventEmitter</code>
-    * [new KafkaJsConsumer()](#new_KafkaJsConsumer_new)
-    * _instance_
-        * [._consume(doTask)](#KafkaJsConsumer+_consume)
-    * _static_
-        * [.KafkaJsConsumer](#KafkaJsConsumer.KafkaJsConsumer)
-            * [new KafkaJsConsumer(option)](#new_KafkaJsConsumer.KafkaJsConsumer_new)
-        * [.EVENT_CONSUMER_READY](#KafkaJsConsumer.EVENT_CONSUMER_READY)
-        * [.EVENT_CONSUMER_ERROR](#KafkaJsConsumer.EVENT_CONSUMER_ERROR)
+    * [new KafkaJsConsumer(option)](#new_KafkaJsConsumer_new)
+    * [.EVENT_CONSUMER_READY](#KafkaJsConsumer.EVENT_CONSUMER_READY)
+    * [.EVENT_CONSUMER_ERROR](#KafkaJsConsumer.EVENT_CONSUMER_ERROR)
 
 <a name="new_KafkaJsConsumer_new"></a>
 
-### new KafkaJsConsumer()
-The class of KafkaConsumer
-
-<a name="KafkaJsConsumer+_consume"></a>
-
-### kafkaJsConsumer.\_consume(doTask)
-The consume function.Do not call this function manual!
-
-**Kind**: instance method of [<code>KafkaJsConsumer</code>](#KafkaJsConsumer)  
-
-| Param | Type |
-| --- | --- |
-| doTask | [<code>KafkaJsDoTask</code>](#KafkaJsDoTask) | 
-
-<a name="KafkaJsConsumer.KafkaJsConsumer"></a>
-
-### KafkaJsConsumer.KafkaJsConsumer
-**Kind**: static class of [<code>KafkaJsConsumer</code>](#KafkaJsConsumer)  
-<a name="new_KafkaJsConsumer.KafkaJsConsumer_new"></a>
-
-#### new KafkaJsConsumer(option)
+### new KafkaJsConsumer(option)
 Creates an instance of KafkaConsumer. It will call the function of #consumer inner.
 
 
@@ -122,16 +107,16 @@ The event to notify that an error ocurred in consumer.
 <a name="KafkaJsProducer"></a>
 
 ## KafkaJsProducer ⇐ <code>EventEmitter</code>
+The class of the producer with kafka-js
+
 **Kind**: global class  
 **Extends**: <code>EventEmitter</code>  
 
 * [KafkaJsProducer](#KafkaJsProducer) ⇐ <code>EventEmitter</code>
-    * [new KafkaJsProducer()](#new_KafkaJsProducer_new)
+    * [new KafkaJsProducer(option)](#new_KafkaJsProducer_new)
     * _instance_
         * [.addData(taskData, options, [callback])](#KafkaJsProducer+addData) ⇒ <code>Boolean</code>
     * _static_
-        * [.KafkaJsProducer](#KafkaJsProducer.KafkaJsProducer)
-            * [new KafkaJsProducer(option)](#new_KafkaJsProducer.KafkaJsProducer_new)
         * [.EVENT_DELAY_MESSAGE_SEND_FINISHED](#KafkaJsProducer.EVENT_DELAY_MESSAGE_SEND_FINISHED)
         * [.EVENT_PRODUCER_READY](#KafkaJsProducer.EVENT_PRODUCER_READY)
         * [.EVENT_PRODUCER_ERROR](#KafkaJsProducer.EVENT_PRODUCER_ERROR)
@@ -139,8 +124,13 @@ The event to notify that an error ocurred in consumer.
 
 <a name="new_KafkaJsProducer_new"></a>
 
-### new KafkaJsProducer()
-The class of the producer of Kafka
+### new KafkaJsProducer(option)
+Creates an instance of KafkaJsProducer.
+
+
+| Param | Type |
+| --- | --- |
+| option | [<code>KafkaJsProducerOption</code>](#KafkaJsProducerOption) | 
 
 <a name="KafkaJsProducer+addData"></a>
 
@@ -155,20 +145,6 @@ Send data to kafka, it will send the data to kafka every `delayInterval` ms when
 | taskData | <code>Object</code> |  | 
 | options | [<code>KafkaJsSendOption</code>](#KafkaJsSendOption) |  | 
 | [callback] | <code>function</code> | <code>function(err) {}</code> | 
-
-<a name="KafkaJsProducer.KafkaJsProducer"></a>
-
-### KafkaJsProducer.KafkaJsProducer
-**Kind**: static class of [<code>KafkaJsProducer</code>](#KafkaJsProducer)  
-<a name="new_KafkaJsProducer.KafkaJsProducer_new"></a>
-
-#### new KafkaJsProducer(option)
-Creates an instance of KafkaJsProducer.
-
-
-| Param | Type |
-| --- | --- |
-| option | [<code>KafkaJsProducerOption</code>](#KafkaJsProducerOption) | 
 
 <a name="KafkaJsProducer.EVENT_DELAY_MESSAGE_SEND_FINISHED"></a>
 
@@ -197,50 +173,27 @@ The event emitted when an error occurs after sending data to kafka.
 <a name="RdKafkaConsumer"></a>
 
 ## RdKafkaConsumer ⇐ <code>EventEmitter</code>
+The class of consumer with node-rdkafka
+
 **Kind**: global class  
 **Extends**: <code>EventEmitter</code>  
 
 * [RdKafkaConsumer](#RdKafkaConsumer) ⇐ <code>EventEmitter</code>
-    * [new RdKafkaConsumer()](#new_RdKafkaConsumer_new)
-    * _instance_
-        * [._consume(doTask)](#RdKafkaConsumer+_consume)
-    * _static_
-        * [.RdKafkaConsumer](#RdKafkaConsumer.RdKafkaConsumer)
-            * [new RdKafkaConsumer(option)](#new_RdKafkaConsumer.RdKafkaConsumer_new)
-        * [.EVENT_CLIENT_READY](#RdKafkaConsumer.EVENT_CLIENT_READY)
-        * [.EVENT_CLIENT_ERROR](#RdKafkaConsumer.EVENT_CLIENT_ERROR)
-        * [.EVENT_CONSUMER_ERROR](#RdKafkaConsumer.EVENT_CONSUMER_ERROR)
-        * [.EVENT_LOG](#RdKafkaConsumer.EVENT_LOG)
+    * [new RdKafkaConsumer(option)](#new_RdKafkaConsumer_new)
+    * [.EVENT_CLIENT_READY](#RdKafkaConsumer.EVENT_CLIENT_READY)
+    * [.EVENT_CLIENT_ERROR](#RdKafkaConsumer.EVENT_CLIENT_ERROR)
+    * [.EVENT_CONSUMER_ERROR](#RdKafkaConsumer.EVENT_CONSUMER_ERROR)
+    * [.EVENT_LOG](#RdKafkaConsumer.EVENT_LOG)
 
 <a name="new_RdKafkaConsumer_new"></a>
 
-### new RdKafkaConsumer()
-The class of RdKafkaConsumer
-
-<a name="RdKafkaConsumer+_consume"></a>
-
-### rdKafkaConsumer.\_consume(doTask)
-The consume function.Do not call this function manual!
-
-**Kind**: instance method of [<code>RdKafkaConsumer</code>](#RdKafkaConsumer)  
-
-| Param | Type |
-| --- | --- |
-| doTask | [<code>DoTask</code>](#DoTask) | 
-
-<a name="RdKafkaConsumer.RdKafkaConsumer"></a>
-
-### RdKafkaConsumer.RdKafkaConsumer
-**Kind**: static class of [<code>RdKafkaConsumer</code>](#RdKafkaConsumer)  
-<a name="new_RdKafkaConsumer.RdKafkaConsumer_new"></a>
-
-#### new RdKafkaConsumer(option)
+### new RdKafkaConsumer(option)
 Creates an instance of RdKafkaConsumer. It will call the function of #consumer inner.
 
 
 | Param | Type |
 | --- | --- |
-| option | [<code>KafkaConsumerOption</code>](#KafkaConsumerOption) | 
+| option | [<code>RdKafkaConsumerOption</code>](#RdKafkaConsumerOption) | 
 
 <a name="RdKafkaConsumer.EVENT_CLIENT_READY"></a>
 
@@ -269,24 +222,30 @@ The event to notify `event.log` from rdkafka.
 <a name="RdKafkaProducer"></a>
 
 ## RdKafkaProducer ⇐ <code>EventEmitter</code>
+The class of the producer with node-rdkafka
+
 **Kind**: global class  
 **Extends**: <code>EventEmitter</code>  
 
 * [RdKafkaProducer](#RdKafkaProducer) ⇐ <code>EventEmitter</code>
-    * [new RdKafkaProducer()](#new_RdKafkaProducer_new)
+    * [new RdKafkaProducer(option)](#new_RdKafkaProducer_new)
     * _instance_
         * [.addData(taskData, options, [callback])](#RdKafkaProducer+addData) ⇒ <code>Boolean</code>
     * _static_
-        * [.RdKafkaProducer](#RdKafkaProducer.RdKafkaProducer)
-            * [new RdKafkaProducer(option)](#new_RdKafkaProducer.RdKafkaProducer_new)
         * [.EVENT_DELAY_MESSAGE_SEND_FINISHED](#RdKafkaProducer.EVENT_DELAY_MESSAGE_SEND_FINISHED)
+        * [.EVENT_PRODUCER_READY](#RdKafkaProducer.EVENT_PRODUCER_READY)
         * [.EVENT_PRODUCER_ERROR](#RdKafkaProducer.EVENT_PRODUCER_ERROR)
         * [.EVENT_SEND_ERROR](#RdKafkaProducer.EVENT_SEND_ERROR)
 
 <a name="new_RdKafkaProducer_new"></a>
 
-### new RdKafkaProducer()
-The class of the producer of Kafka
+### new RdKafkaProducer(option)
+Creates an instance of RdKafkaProducer.
+
+
+| Param | Type |
+| --- | --- |
+| option | [<code>RdKafkaProducerOption</code>](#RdKafkaProducerOption) | 
 
 <a name="RdKafkaProducer+addData"></a>
 
@@ -302,24 +261,16 @@ Send data to kafka.
 | options | [<code>SendOption</code>](#SendOption) |  | 
 | [callback] | <code>function</code> | <code>function(err) {}</code> | 
 
-<a name="RdKafkaProducer.RdKafkaProducer"></a>
-
-### RdKafkaProducer.RdKafkaProducer
-**Kind**: static class of [<code>RdKafkaProducer</code>](#RdKafkaProducer)  
-<a name="new_RdKafkaProducer.RdKafkaProducer_new"></a>
-
-#### new RdKafkaProducer(option)
-Creates an instance of RdKafkaProducer.
-
-
-| Param | Type |
-| --- | --- |
-| option | [<code>ProducerOption</code>](#ProducerOption) | 
-
 <a name="RdKafkaProducer.EVENT_DELAY_MESSAGE_SEND_FINISHED"></a>
 
 ### RdKafkaProducer.EVENT\_DELAY\_MESSAGE\_SEND\_FINISHED
 The event to notify that a batch of messages have been sent finished.
+
+**Kind**: static property of [<code>RdKafkaProducer</code>](#RdKafkaProducer)  
+<a name="RdKafkaProducer.EVENT_PRODUCER_READY"></a>
+
+### RdKafkaProducer.EVENT\_PRODUCER\_READY
+The event to notify that the producer is ready.
 
 **Kind**: static property of [<code>RdKafkaProducer</code>](#RdKafkaProducer)  
 <a name="RdKafkaProducer.EVENT_PRODUCER_ERROR"></a>
@@ -334,35 +285,73 @@ The event to notify the producer is error.
 The event emitted when an error occurs after sending data to kafka.
 
 **Kind**: static property of [<code>RdKafkaProducer</code>](#RdKafkaProducer)  
+<a name="SHKafkaConsumer"></a>
+
+## SHKafkaConsumer ⇐ <code>EventEmitter</code>
+The class of consumer with kafka-node
+
+**Kind**: global class  
+**Extends**: <code>EventEmitter</code>  
+
+* [SHKafkaConsumer](#SHKafkaConsumer) ⇐ <code>EventEmitter</code>
+    * [new SHKafkaConsumer(option)](#new_SHKafkaConsumer_new)
+    * [.EVENT_CLIENT_READY](#SHKafkaConsumer.EVENT_CLIENT_READY)
+    * [.EVENT_CLIENT_ERROR](#SHKafkaConsumer.EVENT_CLIENT_ERROR)
+    * [.EVENT_CONSUMER_ERROR](#SHKafkaConsumer.EVENT_CONSUMER_ERROR)
+
+<a name="new_SHKafkaConsumer_new"></a>
+
+### new SHKafkaConsumer(option)
+Creates an instance of KafkaConsumer. It will call the function of #consumer inner.
+
+
+| Param | Type |
+| --- | --- |
+| option | [<code>SHKafkaConsumerOption</code>](#SHKafkaConsumerOption) | 
+
+<a name="SHKafkaConsumer.EVENT_CLIENT_READY"></a>
+
+### SHKafkaConsumer.EVENT\_CLIENT\_READY
+The event to notify that the client is ready.
+
+**Kind**: static property of [<code>SHKafkaConsumer</code>](#SHKafkaConsumer)  
+<a name="SHKafkaConsumer.EVENT_CLIENT_ERROR"></a>
+
+### SHKafkaConsumer.EVENT\_CLIENT\_ERROR
+The event to notify that the client is error.
+
+**Kind**: static property of [<code>SHKafkaConsumer</code>](#SHKafkaConsumer)  
+<a name="SHKafkaConsumer.EVENT_CONSUMER_ERROR"></a>
+
+### SHKafkaConsumer.EVENT\_CONSUMER\_ERROR
+The event to notify that an error ocurred in consumer.
+
+**Kind**: static property of [<code>SHKafkaConsumer</code>](#SHKafkaConsumer)  
 <a name="SHKafkaProducer"></a>
 
 ## SHKafkaProducer ⇐ <code>EventEmitter</code>
+The class of the producer with kafka-node
+
 **Kind**: global class  
 **Extends**: <code>EventEmitter</code>  
 
 * [SHKafkaProducer](#SHKafkaProducer) ⇐ <code>EventEmitter</code>
-    * [new SHKafkaProducer()](#new_SHKafkaProducer_new)
-    * [new SHKafkaProducer()](#new_SHKafkaProducer_new)
+    * [new SHKafkaProducer(option)](#new_SHKafkaProducer_new)
     * _instance_
         * [.addData(taskData, options, [callback])](#SHKafkaProducer+addData) ⇒ <code>Boolean</code>
     * _static_
-        * [.SHKafkaConsumer](#SHKafkaProducer.SHKafkaConsumer)
-            * [new SHKafkaConsumer(option)](#new_SHKafkaProducer.SHKafkaConsumer_new)
-        * [.SHKafkaProducer](#SHKafkaProducer.SHKafkaProducer)
-            * [new SHKafkaProducer(option)](#new_SHKafkaProducer.SHKafkaProducer_new)
         * [.EVENT_DELAY_MESSAGE_SEND_FINISHED](#SHKafkaProducer.EVENT_DELAY_MESSAGE_SEND_FINISHED)
         * [.EVENT_SEND_ERROR](#SHKafkaProducer.EVENT_SEND_ERROR)
-        * [.SHKafkaConsumer#consume(doTask)](#SHKafkaProducer.SHKafkaConsumer+consume)
 
 <a name="new_SHKafkaProducer_new"></a>
 
-### new SHKafkaProducer()
-The class of KafkaConsumer
+### new SHKafkaProducer(option)
+Creates an instance of SHKafkaProducer.
 
-<a name="new_SHKafkaProducer_new"></a>
 
-### new SHKafkaProducer()
-The class of the producer of Kafka
+| Param | Type |
+| --- | --- |
+| option | [<code>SHKafkaProducerOption</code>](#SHKafkaProducerOption) | 
 
 <a name="SHKafkaProducer+addData"></a>
 
@@ -378,34 +367,6 @@ Send data to kafka, it will send the data to kafka every `delayInterval` ms when
 | options | [<code>SendOption</code>](#SendOption) |  | 
 | [callback] | <code>function</code> | <code>function(err) {}</code> | 
 
-<a name="SHKafkaProducer.SHKafkaConsumer"></a>
-
-### SHKafkaProducer.SHKafkaConsumer
-**Kind**: static class of [<code>SHKafkaProducer</code>](#SHKafkaProducer)  
-<a name="new_SHKafkaProducer.SHKafkaConsumer_new"></a>
-
-#### new SHKafkaConsumer(option)
-Creates an instance of KafkaConsumer. It will call the function of #consumer inner.
-
-
-| Param | Type |
-| --- | --- |
-| option | [<code>KafkaConsumerOption</code>](#KafkaConsumerOption) | 
-
-<a name="SHKafkaProducer.SHKafkaProducer"></a>
-
-### SHKafkaProducer.SHKafkaProducer
-**Kind**: static class of [<code>SHKafkaProducer</code>](#SHKafkaProducer)  
-<a name="new_SHKafkaProducer.SHKafkaProducer_new"></a>
-
-#### new SHKafkaProducer(option)
-Creates an instance of SHKafkaProducer.
-
-
-| Param | Type |
-| --- | --- |
-| option | [<code>ProducerOption</code>](#ProducerOption) | 
-
 <a name="SHKafkaProducer.EVENT_DELAY_MESSAGE_SEND_FINISHED"></a>
 
 ### SHKafkaProducer.EVENT\_DELAY\_MESSAGE\_SEND\_FINISHED
@@ -418,112 +379,6 @@ The event to notify that a batch of messages have been sent finished.
 The event emitted when an error occurs after sending data to kafka.
 
 **Kind**: static property of [<code>SHKafkaProducer</code>](#SHKafkaProducer)  
-<a name="SHKafkaProducer.SHKafkaConsumer+consume"></a>
-
-### SHKafkaProducer.SHKafkaConsumer#consume(doTask)
-The consume function.Do not call this function manual!
-
-**Kind**: static method of [<code>SHKafkaProducer</code>](#SHKafkaProducer)  
-
-| Param | Type |
-| --- | --- |
-| doTask | [<code>DoTask</code>](#DoTask) | 
-
-<a name="SHKafkaProducer"></a>
-
-## SHKafkaProducer ⇐ <code>EventEmitter</code>
-**Kind**: global class  
-**Extends**: <code>EventEmitter</code>  
-
-* [SHKafkaProducer](#SHKafkaProducer) ⇐ <code>EventEmitter</code>
-    * [new SHKafkaProducer()](#new_SHKafkaProducer_new)
-    * [new SHKafkaProducer()](#new_SHKafkaProducer_new)
-    * _instance_
-        * [.addData(taskData, options, [callback])](#SHKafkaProducer+addData) ⇒ <code>Boolean</code>
-    * _static_
-        * [.SHKafkaConsumer](#SHKafkaProducer.SHKafkaConsumer)
-            * [new SHKafkaConsumer(option)](#new_SHKafkaProducer.SHKafkaConsumer_new)
-        * [.SHKafkaProducer](#SHKafkaProducer.SHKafkaProducer)
-            * [new SHKafkaProducer(option)](#new_SHKafkaProducer.SHKafkaProducer_new)
-        * [.EVENT_DELAY_MESSAGE_SEND_FINISHED](#SHKafkaProducer.EVENT_DELAY_MESSAGE_SEND_FINISHED)
-        * [.EVENT_SEND_ERROR](#SHKafkaProducer.EVENT_SEND_ERROR)
-        * [.SHKafkaConsumer#consume(doTask)](#SHKafkaProducer.SHKafkaConsumer+consume)
-
-<a name="new_SHKafkaProducer_new"></a>
-
-### new SHKafkaProducer()
-The class of KafkaConsumer
-
-<a name="new_SHKafkaProducer_new"></a>
-
-### new SHKafkaProducer()
-The class of the producer of Kafka
-
-<a name="SHKafkaProducer+addData"></a>
-
-### shKafkaProducer.addData(taskData, options, [callback]) ⇒ <code>Boolean</code>
-Send data to kafka, it will send the data to kafka every `delayInterval` ms when `delayInterval` is set. It will wait the client i
-
-**Kind**: instance method of [<code>SHKafkaProducer</code>](#SHKafkaProducer)  
-**Returns**: <code>Boolean</code> - Whether the taskData is valid.  
-
-| Param | Type | Default |
-| --- | --- | --- |
-| taskData | <code>Object</code> |  | 
-| options | [<code>SendOption</code>](#SendOption) |  | 
-| [callback] | <code>function</code> | <code>function(err) {}</code> | 
-
-<a name="SHKafkaProducer.SHKafkaConsumer"></a>
-
-### SHKafkaProducer.SHKafkaConsumer
-**Kind**: static class of [<code>SHKafkaProducer</code>](#SHKafkaProducer)  
-<a name="new_SHKafkaProducer.SHKafkaConsumer_new"></a>
-
-#### new SHKafkaConsumer(option)
-Creates an instance of KafkaConsumer. It will call the function of #consumer inner.
-
-
-| Param | Type |
-| --- | --- |
-| option | [<code>KafkaConsumerOption</code>](#KafkaConsumerOption) | 
-
-<a name="SHKafkaProducer.SHKafkaProducer"></a>
-
-### SHKafkaProducer.SHKafkaProducer
-**Kind**: static class of [<code>SHKafkaProducer</code>](#SHKafkaProducer)  
-<a name="new_SHKafkaProducer.SHKafkaProducer_new"></a>
-
-#### new SHKafkaProducer(option)
-Creates an instance of SHKafkaProducer.
-
-
-| Param | Type |
-| --- | --- |
-| option | [<code>ProducerOption</code>](#ProducerOption) | 
-
-<a name="SHKafkaProducer.EVENT_DELAY_MESSAGE_SEND_FINISHED"></a>
-
-### SHKafkaProducer.EVENT\_DELAY\_MESSAGE\_SEND\_FINISHED
-The event to notify that a batch of messages have been sent finished.
-
-**Kind**: static property of [<code>SHKafkaProducer</code>](#SHKafkaProducer)  
-<a name="SHKafkaProducer.EVENT_SEND_ERROR"></a>
-
-### SHKafkaProducer.EVENT\_SEND\_ERROR
-The event emitted when an error occurs after sending data to kafka.
-
-**Kind**: static property of [<code>SHKafkaProducer</code>](#SHKafkaProducer)  
-<a name="SHKafkaProducer.SHKafkaConsumer+consume"></a>
-
-### SHKafkaProducer.SHKafkaConsumer#consume(doTask)
-The consume function.Do not call this function manual!
-
-**Kind**: static method of [<code>SHKafkaProducer</code>](#SHKafkaProducer)  
-
-| Param | Type |
-| --- | --- |
-| doTask | [<code>DoTask</code>](#DoTask) | 
-
 <a name="PrepareMiddleware"></a>
 
 ## PrepareMiddleware(data) ⇒ <code>Boolean</code>
@@ -543,6 +398,16 @@ The consume function.Do not call this function manual!
 | Param | Type | Description |
 | --- | --- | --- |
 | data | <code>Object</code> | the data want to send |
+
+<a name="EncoderFunction"></a>
+
+## EncoderFunction(data) ⇒ <code>any</code>
+**Kind**: global function  
+**Returns**: <code>any</code> - The output data  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>any</code> | The input data |
 
 <a name="PrepareMiddleware"></a>
 
@@ -636,6 +501,8 @@ The consume function.Do not call this function manual!
 | [acks] | <code>Number</code> | <code>-1</code> | Control the number of required acks. -1 = all insync replicas must acknowledge (default) 0 = no acknowledgments 1 = only waits for the leader to acknowledge |
 | [timeout] | <code>Number</code> | <code>30000</code> | The time to await a response in ms |
 | [compression] | <code>Number</code> | <code>CompressionTypes.None</code> | Compression codec, it use none compression as default. When pass `CompressionTypes.GZIP`, it will use gzip compression. |
+| [encoder] | [<code>EncoderFunction</code>](#EncoderFunction) | <code>JSON.stringify</code> |  |
+| [beforeEncodeType] | <code>String</code> | <code>&#x27;object&#x27;</code> | If the input data is not a instance of the type of `beforeEncodeType`, the `encoder` function will be not called. |
 
 <a name="DoTask"></a>
 
@@ -650,9 +517,9 @@ The consume function.Do not call this function manual!
 
 ## ConsumerOption
 **Kind**: global typedef  
-<a name="KafkaConsumerOption"></a>
+<a name="RdKafkaConsumerOption"></a>
 
-## KafkaConsumerOption
+## RdKafkaConsumerOption
 **Kind**: global typedef  
 
 | Param | Type | Description |
@@ -680,17 +547,19 @@ The consume function.Do not call this function manual!
 | [timestamp] | <code>Number</code> | <code>0</code> | Timestamp to send with the message. |
 | [headers] | <code>Object</code> | <code></code> | A list of custom key value pairs that provide message metadata. |
 
-<a name="ProducerOption"></a>
+<a name="RdKafkaProducerOption"></a>
 
-## ProducerOption : <code>Object</code>
+## RdKafkaProducerOption : <code>Object</code>
 **Kind**: global typedef  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| name | <code>String</code> | The name of current instance. |
-| producer | <code>rdkafka.HighLevelProducer</code> |  |
-| [topic] | <code>String</code> | The topic where you save data in it. |
-| [prepareMiddleware] | [<code>PrepareMiddleware</code>](#PrepareMiddleware) |  |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| name | <code>String</code> |  | The name of current instance. |
+| producer | <code>rdkafka.HighLevelProducer</code> |  |  |
+| [topic] | <code>String</code> |  | The topic where you save data in it. |
+| [prepareMiddleware] | [<code>PrepareMiddleware</code>](#PrepareMiddleware) |  |  |
+| [encoder] | [<code>EncoderFunction</code>](#EncoderFunction) | <code>JSON.stringify</code> |  |
+| [beforeEncodeType] | <code>String</code> | <code>&#x27;object&#x27;</code> | If the input data is not a instance of the type of `beforeEncodeType`, the `encoder` function will be not called. |
 
 <a name="DoTask"></a>
 
@@ -720,9 +589,9 @@ The consume function.Do not call this function manual!
 | [migrateHLC] | <code>Boolean</code> | <code>false</code> |  |
 | [migrateRolling] | <code>Boolean</code> | <code>true</code> |  |
 
-<a name="KafkaConsumerOption"></a>
+<a name="SHKafkaConsumerOption"></a>
 
-## KafkaConsumerOption
+## SHKafkaConsumerOption
 **Kind**: global typedef  
 
 | Param | Type | Description |
@@ -746,9 +615,9 @@ The consume function.Do not call this function manual!
 | --- | --- | --- | --- |
 | [topicSuffix] | <code>String</code> | <code>&#x27;&#x27;</code> | The suffix of the topic name. |
 
-<a name="ProducerOption"></a>
+<a name="SHKafkaProducerOption"></a>
 
-## ProducerOption : <code>Object</code>
+## SHKafkaProducerOption : <code>Object</code>
 **Kind**: global typedef  
 
 | Param | Type | Description |

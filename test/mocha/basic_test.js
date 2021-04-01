@@ -7,7 +7,7 @@ const FIST_DATA = {a:1,b:2};
 const SCHEDULE_NAME1 = 'schedule1';
 const TOPIC_NAME1 = 'topic.test1';
 
-describe('basic test# ', function() {
+describe('sohu kafka test# ', function() {
     // it('wait for client ready',function(done) {
     //     producerPromise.then(function() {
     //         done();
