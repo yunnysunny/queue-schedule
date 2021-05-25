@@ -1,3 +1,9 @@
+# v2.5.1
+
+## Fix
+
+1. Fix the issue of not calling callback function when addData return false in the class of `RdKafkaProducer` `SHKafkaProducer` `KafkaJsProducer`.
+
 # v2.5.0
 
 ## Add
